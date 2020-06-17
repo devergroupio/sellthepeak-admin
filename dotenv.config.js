@@ -8,6 +8,7 @@ const getEnvFile = () => {
   if (fs.existsSync(envPath)) {
     return envPath;
   } else {
+    console.log(process.env.NODE_ENV);
     if (process.env.NODE_ENV !== "production") {
       throw new Error(`missing env file for stage: ${process.env.NODE_ENV}`);
     }
