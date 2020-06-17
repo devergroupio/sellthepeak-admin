@@ -9,7 +9,7 @@ import Redirect from "../components/Redirect";
 const PageIndex = () => {
   const { user } = useContext(AppContext);
   if (!user) {
-    return <Redirect to="/admin/login" />;
+    return <Redirect to="/admin" />;
   }
   const [form] = Form.useForm();
   const gqlClient = useApolloClient();
