@@ -1,14 +1,27 @@
 import AdminLayout from "../components/layouts/AdminLayout";
-import { Button, Form, Input, notification, Popconfirm, Table } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  notification,
+  Popconfirm,
+  Table,
+  Modal,
+} from "antd";
 import React, { useCallback, useState, useContext, useEffect } from "react";
 import { useApolloClient } from "@apollo/react-hooks";
 import { FETCH_DEFINED_LIST } from "~@/graphql/query";
 import _ from "lodash";
+import { PlusSquareOutlined } from "@ant-design/icons";
+import { css } from "@emotion/core";
 import moment from "moment";
 import {
   DELETE_DEFINED_LIST,
   UPDATE_DATE_DEFINED_LIST,
 } from "~@/graphql/mutation";
+
+import ModalAddChart from "~@/components/ModalAddChart";
+
 import AppContext from "~@/components/AppProvider";
 import Redirect from "../components/Redirect";
 
@@ -52,6 +65,7 @@ const EditableCell = ({
 
 export default () => {
   const { user } = useContext(AppContext);
+  const [modalAdd, setModalAdd] = useState(false);
   if (!user) {
     return <Redirect to="/login" />;
   }
@@ -160,10 +174,10 @@ export default () => {
   };
 
   const columns = [
-    // {
-    //   title: "Id",
-    //   dataIndex: "id",
-    // },
+    {
+      title: "Id",
+      dataIndex: "id",
+    },
     {
       title: "Keyword",
       dataIndex: "keyword",
@@ -171,21 +185,15 @@ export default () => {
     {
       title: "SyncedAt",
       dataIndex: "syncedAt",
-      render: (syncedAt) => (
-        <p>{moment(syncedAt).format("MM-DD-YYYY HH:mm")}</p>
-      ),
+      render: (syncedAt) => <p>{moment(syncedAt).fromNow()}</p>,
     },
     {
       title: "words",
       dataIndex: "words",
-      width: "8%",
+      width: "100px",
       editable: true,
     },
-    {
-      title: "xchars",
-      dataIndex: "xchars",
-      editable: true,
-    },
+
     {
       title: "Psa link",
       dataIndex: "psa_link",
@@ -202,41 +210,52 @@ export default () => {
       render: (_, record) => {
         const editable = isEditing(record);
         return editable ? (
-          <span>
-            <a
-              onClick={() => save(record.id)}
-              style={{
-                marginRight: 8,
-              }}
+          <div>
+            <span
+              css={css`
+                margin-right: 5px;
+              `}
             >
-              Save
-            </a>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
+              <a
+                onClick={() => save(record.id)}
+                style={{
+                  marginRight: 8,
+                }}
+              >
+                Save
+              </a>
+              <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                <a>Cancel</a>
+              </Popconfirm>
+            </span>
+            <Popconfirm
+              title="Sure to delete?"
+              onConfirm={() => handleDelete(record.id)}
+            >
+              <a style={{ color: "red" }}>Delete</a>
             </Popconfirm>
-          </span>
+          </div>
         ) : (
-          <a
-            // @TODO: fix
-            // disabled={editingKey !== "" ? true : false}
-            onClick={() => edit(record)}
-          >
-            Edit
-          </a>
+          <div>
+            <a
+              css={css`
+                margin-right: 5px;
+              `}
+              // @TODO: fix
+              // disabled={editingKey !== "" ? true : false}
+              onClick={() => edit(record)}
+            >
+              Edit
+            </a>
+            <Popconfirm
+              title="Sure to delete?"
+              onConfirm={() => handleDelete(record.id)}
+            >
+              <a style={{ color: "red" }}>Delete</a>
+            </Popconfirm>
+          </div>
         );
       },
-    },
-    {
-      title: "",
-      dataIndex: "actionDelete",
-      render: (text, record) => (
-        <Popconfirm
-          title="Sure to delete?"
-          onConfirm={() => handleDelete(record.id)}
-        >
-          <a style={{ color: "red" }}>Delete</a>
-        </Popconfirm>
-      ),
     },
   ];
   const mergedColumns = columns.map((col) => {
@@ -255,8 +274,30 @@ export default () => {
     };
   });
 
+  const addSuccessChart = (data) => {
+    setDataTable([data, ...dataTable]);
+  };
+
   return (
     <AdminLayout>
+      <Button
+        type="primary"
+        color="green"
+        icon={<PlusSquareOutlined />}
+        onClick={() => setModalAdd(true)}
+        css={css`
+          margin-bottom: 10px;
+        `}
+      >
+        Add chart
+      </Button>
+      {modalAdd && (
+        <ModalAddChart
+          show={modalAdd}
+          onHideModal={() => setModalAdd(false)}
+          addnewChart={addSuccessChart}
+        />
+      )}
       <Form form={form} component={false}>
         <Table
           components={{
