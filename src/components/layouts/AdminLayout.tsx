@@ -5,15 +5,17 @@ import { Layout, Menu, Button } from "antd";
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-  VideoCameraOutlined,
   DeleteOutlined,
   HomeOutlined,
+  AreaChartOutlined,
+  ToolFilled,
 } from "@ant-design/icons";
 const { Header, Sider, Content } = Layout;
 
 export default (props) => {
   const router = useRouter();
   const selectedKey = router.route;
+  console.log(router);
 
   const [collapsed, setCollapsed] = useState(false);
   const toggle = () => setCollapsed(!collapsed);
@@ -28,34 +30,41 @@ export default (props) => {
             defaultSelectedKeys={[`${selectedKey}`]}
           >
             <Menu.Item key="/">
-              <Link href="/">
+              <a href="https://sellthepeak.com">
+                <HomeOutlined />
+                <span>Home</span>
+              </a>
+            </Menu.Item>
+            <Menu.Item key="/charts">
+              <Link href="/charts">
                 <a>
-                  <HomeOutlined />
-                  <span>Home</span>
+                  <AreaChartOutlined />
+                  <span>Charts</span>
                 </a>
               </Link>
             </Menu.Item>
-            <Menu.Item key="/defined-list">
-              <Link href="/defined-list">
+            <Menu.Item key="/short-code">
+              <Link href="/short-code">
                 <a>
-                  <VideoCameraOutlined />
-                  <span>Defined List</span>
+                  <ToolFilled />
+                  <span>Short Code</span>
                 </a>
               </Link>
             </Menu.Item>
-            <Menu.Item key="/delete-request">
-              <Link href="/delete-request">
+
+            <Menu.Item key="/delete-requestion">
+              <Link href="/delete-requestion">
                 <a>
                   <DeleteOutlined />
-                  <span>Request Delete</span>
+                  <span>Delete Requestion</span>
                 </a>
               </Link>
             </Menu.Item>
-            <Menu.Item key="/exclude-words">
-              <Link href="/exclude-words">
+            <Menu.Item key="/exclusion">
+              <Link href="/exclusion">
                 <a>
                   <DeleteOutlined />
-                  <span>Exclude Words</span>
+                  <span>Exclusion</span>
                 </a>
               </Link>
             </Menu.Item>
