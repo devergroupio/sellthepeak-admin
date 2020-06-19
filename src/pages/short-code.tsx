@@ -14,8 +14,9 @@ const ShortCode = () => {
   const gqlClient = useApolloClient();
   const [selectedApp, setSelectedApp] = useState("chart");
   const [shortCode, setShortCode] = useState("");
+  const [disableCreate, setDisableCreate] = useState(true);
   const [optionsChartDefine, setOptionsChartDefine] = useState<
-    [{ id: string }]
+    [{ id: string; keyword: string }]
   >(null);
   const [loading, setLoading] = useState(true);
 
@@ -82,10 +83,15 @@ const ShortCode = () => {
     }
     form.resetFields();
   };
-
+  const formChangeValues = () => {
+    if (disableCreate) {
+      setDisableCreate(false);
+    }
+  };
   return (
     <AdminLayout>
       <Form
+        onValuesChange={formChangeValues}
         form={form}
         labelAlign="left"
         css={css`
@@ -135,16 +141,17 @@ const ShortCode = () => {
           </Form.Item>
         )}
         {optionsChartDefine && selectedApp === "chart" && (
-          <Form.Item label="Name Chart" name="nameChart">
-            <Select
-              defaultValue={optionsChartDefine[0].id}
-              css={css`
-                min-width: 300px;
-              `}
-              mode="multiple"
-            >
+          <Form.Item
+            label="Name Chart"
+            name="nameChart"
+            css={css`
+              width: 100% !important;
+            `}
+            rules={[{ required: true }]}
+          >
+            <Select mode="multiple">
               {optionsChartDefine.map((opt) => (
-                <Option value={opt.id}>{opt.id}</Option>
+                <Option value={opt.id}>{opt.keyword}</Option>
               ))}
             </Select>
           </Form.Item>
@@ -156,7 +163,7 @@ const ShortCode = () => {
             width: 100%;
           `}
         >
-          <Button type="primary" htmlType="submit">
+          <Button disabled={disableCreate} type="primary" htmlType="submit">
             Create Short code
           </Button>
           {shortCode && (
