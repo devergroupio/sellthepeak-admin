@@ -17,7 +17,7 @@ const Login = () => {
         description: "Login success",
       });
       setUser();
-      Router.push("/admin");
+      Router.push("/");
     } else {
       notification.error({
         message: "Error",

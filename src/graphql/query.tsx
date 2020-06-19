@@ -212,3 +212,12 @@ export const FETCH_PROXY_SETTING = gql`
 		}
 	}
 `;
+
+export const FETCH_NEEDED_CREATE_SHORTCODE = gql`
+  query neededCreateShortCode {
+    defined_list {
+      id
+      keyword
+    }
+  }
+`;
