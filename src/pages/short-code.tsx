@@ -92,103 +92,107 @@ const ShortCode = () => {
   const copyToClipboard = () => {};
   return (
     <AdminLayout>
-      <Form
-        onValuesChange={formChangeValues}
-        form={form}
-        labelAlign="left"
-        css={css`
-          display: flex;
-          justify-content: safe;
-          flex-wrap: wrap;
-        `}
-        onFinish={createShortCode}
-      >
-        <Form.Item
-          label="App"
-          name="app"
+      {loading ? (
+        <Spin />
+      ) : (
+        <Form
+          onValuesChange={formChangeValues}
+          form={form}
+          labelAlign="left"
           css={css`
-            margin-right: 15px;
+            display: flex;
+            justify-content: safe;
+            flex-wrap: wrap;
           `}
+          onFinish={createShortCode}
         >
-          <Select
-            defaultValue={selectedApp}
-            css={css`
-              width: 200px !important;
-            `}
-            onChange={selectApp}
-          >
-            {optionsApp.map((opt) => (
-              <Option value={opt.value}>{opt.label}</Option>
-            ))}
-          </Select>
-        </Form.Item>
-        {selectedApp === "chart" && (
           <Form.Item
-            label="Type"
-            name="type"
+            label="App"
+            name="app"
             css={css`
               margin-right: 15px;
             `}
           >
             <Select
-              defaultValue="multi"
+              defaultValue={selectedApp}
               css={css`
                 width: 200px !important;
               `}
+              onChange={selectApp}
             >
-              {optionsChart.map((opt) => (
+              {optionsApp.map((opt) => (
                 <Option value={opt.value}>{opt.label}</Option>
               ))}
             </Select>
           </Form.Item>
-        )}
-        {optionsChartDefine && selectedApp === "chart" && (
-          <Form.Item
-            label="Name Chart"
-            name="nameChart"
-            css={css`
-              width: 100% !important;
-            `}
-            rules={[{ required: true }]}
-          >
-            <Select mode="multiple">
-              {optionsChartDefine.map((opt) => (
-                <Option value={opt.id}>{opt.keyword}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-        )}
-        <div
-          css={css`
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-          `}
-        >
-          <Button disabled={disableCreate} type="primary" htmlType="submit">
-            Create Short code
-          </Button>
-          {shortCode && (
-            <div
+          {selectedApp === "chart" && (
+            <Form.Item
+              label="Type"
+              name="type"
               css={css`
-                display: flex;
-                flex-direction: column;
-                width: 70%;
+                margin-right: 15px;
               `}
             >
-              <TextArea
-                autoSize
-                ref={refTextArea}
-                disabled={true}
-                value={shortCode}
-              />
-              <Button type="dashed" onClick={copyToClipboard}>
-                Copy To Clipboard
-              </Button>
-            </div>
+              <Select
+                defaultValue="multi"
+                css={css`
+                  width: 200px !important;
+                `}
+              >
+                {optionsChart.map((opt) => (
+                  <Option value={opt.value}>{opt.label}</Option>
+                ))}
+              </Select>
+            </Form.Item>
           )}
-        </div>
-      </Form>
+          {optionsChartDefine && selectedApp === "chart" && (
+            <Form.Item
+              label="Name Chart"
+              name="nameChart"
+              css={css`
+                width: 100% !important;
+              `}
+              rules={[{ required: true }]}
+            >
+              <Select mode="multiple">
+                {optionsChartDefine.map((opt) => (
+                  <Option value={opt.id}>{opt.keyword}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )}
+          <div
+            css={css`
+              display: flex;
+              justify-content: space-between;
+              width: 100%;
+            `}
+          >
+            <Button disabled={disableCreate} type="primary" htmlType="submit">
+              Create Short code
+            </Button>
+            {shortCode && (
+              <div
+                css={css`
+                  display: flex;
+                  flex-direction: column;
+                  width: 70%;
+                `}
+              >
+                <TextArea
+                  autoSize
+                  ref={refTextArea}
+                  disabled={true}
+                  value={shortCode}
+                />
+                <Button type="dashed" onClick={copyToClipboard}>
+                  Copy To Clipboard
+                </Button>
+              </div>
+            )}
+          </div>
+        </Form>
+      )}
     </AdminLayout>
   );
 };
