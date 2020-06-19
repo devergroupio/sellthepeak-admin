@@ -56,7 +56,6 @@ const ShortCode = () => {
   }, []);
 
   const createShortCode = (values) => {
-    console.log(values);
     if (values.app && values.app === "search") {
       setShortCode(`
       <div
