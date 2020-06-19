@@ -66,10 +66,11 @@ export default () => {
 				form={form}
 				onFieldsChange={onFieldsChange}
 			>
-				<Form.Item name="proxy" label="Proxy" rules={[{ required: true }]}>
+				<Form.Item name="proxy" label="Proxy">
 					<TextArea autoSize />
 				</Form.Item>
-				<div
+				<p>host:port:username:pasword</p>
+				{/* <div
 					css={css`
 						display: flex;
 					`}
@@ -92,7 +93,7 @@ export default () => {
 						<p>Second line: Username</p>
 						<p>Third line: Password</p>
 					</div>
-				</div>
+				</div> */}
 				<Button
 					type="primary"
 					disabled={disable}
