@@ -1,5 +1,5 @@
 import AdminLayout from "../components/layouts/AdminLayout";
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import { Form, Input, Select, Button, Spin } from "antd";
 import { css } from "@emotion/core";
 import { useApolloClient } from "@apollo/react-hooks";
@@ -12,6 +12,7 @@ const { Option } = Select;
 const ShortCode = () => {
   const [form] = Form.useForm();
   const gqlClient = useApolloClient();
+  const refTextArea = useRef(null);
   const [selectedApp, setSelectedApp] = useState("chart");
   const [shortCode, setShortCode] = useState("");
   const [disableCreate, setDisableCreate] = useState(true);
@@ -87,6 +88,8 @@ const ShortCode = () => {
       setDisableCreate(false);
     }
   };
+
+  const copyToClipboard = () => {};
   return (
     <AdminLayout>
       <Form
@@ -166,14 +169,23 @@ const ShortCode = () => {
             Create Short code
           </Button>
           {shortCode && (
-            <TextArea
-              autoSize
+            <div
               css={css`
+                display: flex;
+                flex-direction: column;
                 width: 70%;
               `}
-              disabled={true}
-              value={shortCode}
-            />
+            >
+              <TextArea
+                autoSize
+                ref={refTextArea}
+                disabled={true}
+                value={shortCode}
+              />
+              <Button type="dashed" onClick={copyToClipboard}>
+                Copy To Clipboard
+              </Button>
+            </div>
           )}
         </div>
       </Form>
