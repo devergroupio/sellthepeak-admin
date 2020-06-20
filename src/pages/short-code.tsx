@@ -45,7 +45,7 @@ const ShortCode = () => {
   const optionsChart = [
     {
       value: "multi",
-      label: "Multi Chart",
+      label: "Switchable Chart",
     },
     {
       value: "sametime",
@@ -68,7 +68,7 @@ const ShortCode = () => {
       const appContent = values.app ? values.app : "chart";
       const context = {
         ids: values.nameChart ? values.nameChart : [optionsChartDefine[0].id],
-        multi: values.type ? (values.type === "multi" ? true : false) : true,
+        multi: values.type ? (values.type === "multi" ? false : true) : true,
       };
       const shortCode = `
       <div
@@ -76,7 +76,6 @@ const ShortCode = () => {
       app="${appContent}"
       context='${JSON.stringify(context)}'
     ></div>
-    }
    
     `;
       setShortCode(shortCode);
