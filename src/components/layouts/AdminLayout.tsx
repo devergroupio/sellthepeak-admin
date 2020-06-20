@@ -68,6 +68,14 @@ export default (props) => {
                 </a>
               </Link>
             </Menu.Item>
+            <Menu.Item key="/setting-proxy">
+              <Link href="/setting-proxy">
+                <a>
+                  <ToolFilled />
+                  <span>Proxies</span>
+                </a>
+              </Link>
+            </Menu.Item>
           </Menu>
         </Sider>
         <Layout className="site-layout">
