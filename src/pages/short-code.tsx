@@ -77,12 +77,10 @@ const ShortCode = () => {
       app="${appContent}"
       context='${JSON.stringify(context)}'
     ></div>
-    }
    
     `;
       setShortCode(shortCode);
     }
-    form.resetFields();
   };
   const formChangeValues = () => {
     if (disableCreate) {
