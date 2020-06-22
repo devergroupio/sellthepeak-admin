@@ -45,8 +45,8 @@ const ShortCode = () => {
   ];
   const optionsChart = [
     {
-      value: "multi",
-      label: "Multi Chart",
+      value: "switch",
+      label: "Switch Chart",
     },
     {
       value: "sametime",
@@ -69,7 +69,7 @@ const ShortCode = () => {
       const appContent = values.app ? values.app : "chart";
       const context = {
         ids: values.nameChart ? values.nameChart : [optionsChartDefine[0].id],
-        multi: values.type ? (values.type === "multi" ? true : false) : true,
+        multi: values.type ? (values.type === "switch" ? true : false) : true,
       };
       const shortCode = `
       <div
@@ -149,7 +149,7 @@ const ShortCode = () => {
                 `}
               >
                 <Select
-                  defaultValue="multi"
+                  defaultValue="switch"
                   css={css`
                     width: 200px !important;
                   `}
