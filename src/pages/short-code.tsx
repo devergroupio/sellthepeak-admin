@@ -1,8 +1,9 @@
 import AdminLayout from "../components/layouts/AdminLayout";
 import React, { useCallback, useState, useEffect, useRef } from "react";
-import { Form, Input, Select, Button, Spin } from "antd";
+import { Form, Input, Select, Button, Spin, notification } from "antd";
 import { css } from "@emotion/core";
 import { useApolloClient } from "@apollo/react-hooks";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 import { FETCH_NEEDED_CREATE_SHORTCODE } from "~@/graphql/query";
 
@@ -44,8 +45,8 @@ const ShortCode = () => {
   ];
   const optionsChart = [
     {
-      value: "multi",
-      label: "Switchable Chart",
+      value: "switch",
+      label: "Switch Chart",
     },
     {
       value: "sametime",
@@ -68,7 +69,7 @@ const ShortCode = () => {
       const appContent = values.app ? values.app : "chart";
       const context = {
         ids: values.nameChart ? values.nameChart : [optionsChartDefine[0].id],
-        multi: values.type ? (values.type === "multi" ? false : true) : true,
+        multi: values.type ? (values.type === "switch" ? true : false) : true,
       };
       const shortCode = `
       <div
@@ -80,7 +81,6 @@ const ShortCode = () => {
     `;
       setShortCode(shortCode);
     }
-    form.resetFields();
   };
   const formChangeValues = () => {
     if (disableCreate) {
@@ -88,7 +88,12 @@ const ShortCode = () => {
     }
   };
 
-  const copyToClipboard = () => {};
+  const copyToClipboard = () => {
+    notification.success({
+      message: "Copy to clipboard success !",
+      duration: 1,
+    });
+  };
   return (
     <AdminLayout>
       {loading ? (
@@ -97,6 +102,7 @@ const ShortCode = () => {
         <div
           css={css`
             display: flex;
+            flex-wrap: wrap;
           `}
         >
           <Form
@@ -109,6 +115,7 @@ const ShortCode = () => {
               justify-content: safe;
               flex-wrap: wrap;
               padding-right: 20px;
+              width: 50%;
             `}
             onFinish={createShortCode}
           >
@@ -140,7 +147,7 @@ const ShortCode = () => {
                 `}
               >
                 <Select
-                  defaultValue="multi"
+                  defaultValue="switch"
                   css={css`
                     width: 200px !important;
                   `}
@@ -186,7 +193,7 @@ const ShortCode = () => {
               css={css`
                 display: flex;
                 flex-direction: column;
-                width: 70%;
+                width: 50%;
               `}
             >
               <TextArea
@@ -194,10 +201,13 @@ const ShortCode = () => {
                 ref={refTextArea}
                 disabled={true}
                 value={shortCode}
+                id="short-code"
               />
-              <Button type="dashed" onClick={copyToClipboard}>
-                Copy To Clipboard
-              </Button>
+              <CopyToClipboard text={shortCode}>
+                <Button type="dashed" onClick={copyToClipboard}>
+                  Copy To Clipboard
+                </Button>
+              </CopyToClipboard>
             </div>
           )}
         </div>
