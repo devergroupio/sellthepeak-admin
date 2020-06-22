@@ -185,7 +185,7 @@ export default () => {
     {
       title: "SyncedAt",
       dataIndex: "syncedAt",
-      render: (syncedAt) => <p>{moment(syncedAt).fromNow()}</p>,
+      render: (syncedAt) => syncedAt && <p>{moment(syncedAt).fromNow()}</p>,
     },
     {
       title: "words",
