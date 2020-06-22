@@ -1,8 +1,9 @@
 import AdminLayout from "../components/layouts/AdminLayout";
 import React, { useCallback, useState, useEffect, useRef } from "react";
-import { Form, Input, Select, Button, Spin } from "antd";
+import { Form, Input, Select, Button, Spin, notification } from "antd";
 import { css } from "@emotion/core";
 import { useApolloClient } from "@apollo/react-hooks";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 import { FETCH_NEEDED_CREATE_SHORTCODE } from "~@/graphql/query";
 
@@ -89,7 +90,12 @@ const ShortCode = () => {
     }
   };
 
-  const copyToClipboard = () => {};
+  const copyToClipboard = () => {
+    notification.success({
+      message: "Copy to clipboard success !",
+      duration: 1,
+    });
+  };
   return (
     <AdminLayout>
       {loading ? (
@@ -98,6 +104,7 @@ const ShortCode = () => {
         <div
           css={css`
             display: flex;
+            flex-wrap: wrap;
           `}
         >
           <Form
@@ -110,6 +117,7 @@ const ShortCode = () => {
               justify-content: safe;
               flex-wrap: wrap;
               padding-right: 20px;
+              width: 50%;
             `}
             onFinish={createShortCode}
           >
@@ -187,7 +195,7 @@ const ShortCode = () => {
               css={css`
                 display: flex;
                 flex-direction: column;
-                width: 70%;
+                width: 50%;
               `}
             >
               <TextArea
@@ -195,10 +203,13 @@ const ShortCode = () => {
                 ref={refTextArea}
                 disabled={true}
                 value={shortCode}
+                id="short-code"
               />
-              <Button type="dashed" onClick={copyToClipboard}>
-                Copy To Clipboard
-              </Button>
+              <CopyToClipboard text={shortCode}>
+                <Button type="dashed" onClick={copyToClipboard}>
+                  Copy To Clipboard
+                </Button>
+              </CopyToClipboard>
             </div>
           )}
         </div>
