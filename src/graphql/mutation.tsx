@@ -22,7 +22,7 @@ export const DELETE_DEFINED_LIST = gql`
 	}
 `;
 
-export const UPDATE_DATE_DEFINED_LIST = gql`
+export const UPDATE_DEFINED_LIST = gql`
 	mutation updateDefinedList(
 		$idDefinedList: String!
 		$data: defined_list_set_input
