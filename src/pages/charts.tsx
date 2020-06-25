@@ -11,6 +11,7 @@ import {
 import React, { useCallback, useState, useContext, useEffect } from "react";
 import { useApolloClient } from "@apollo/react-hooks";
 import { FETCH_DEFINED_LIST } from "~@/graphql/query";
+import InfiniteScroll from "react-infinite-scroller";
 import _ from "lodash";
 import { PlusSquareOutlined } from "@ant-design/icons";
 import { css } from "@emotion/core";
@@ -146,7 +147,6 @@ export default () => {
 		const indexChartEdit = dataTable.findIndex(
 			(item) => item.id === infoChart.id
 		);
-		setLoadingForceUpdate(true);
 		gqlClient
 			.mutate({
 				mutation: UPDATE_DEFINED_LIST,
@@ -167,14 +167,14 @@ export default () => {
 				setDataTable(newData);
 				setLoadingForceUpdate(false);
 				notification.success({
-					message: "Edit chart !",
+					message: "Force update chart !",
 					description: "Success",
 				});
 			})
 			.catch(() => {
 				setLoadingForceUpdate(false);
 				notification.error({
-					message: "Edit chart !",
+					message: "Force update chart !",
 					description: "Something went wrong, please try again !",
 				});
 			});
@@ -410,25 +410,15 @@ export default () => {
 				</Form>
 			</Modal>
 			<Form form={form} component={false}>
-				<Table
-					columns={columns}
-					rowKey={(record) => record.id}
-					rowClassName="editable-row"
-					dataSource={dataTable}
-					pagination={false}
-					loading={loadingTable}
-				/>
-				{!loadingTable
-					? isHasMore && (
-							<Button
-								style={{ margin: "10px 0", float: "right" }}
-								type="primary"
-								onClick={getMoreDefinedList}
-							>
-								Load More
-							</Button>
-					  )
-					: ""}
+				<InfiniteScroll loadMore={getMoreDefinedList} hasMore={isHasMore}>
+					<Table
+						columns={columns}
+						rowKey={(record) => record.id}
+						rowClassName="editable-row"
+						dataSource={dataTable}
+						loading={loadingTable}
+					/>
+				</InfiniteScroll>
 			</Form>
 		</AdminLayout>
 	);
