@@ -26,6 +26,19 @@ import ModalAddExcelFile from "~@/components/ModalAddExcelFile";
 const LIMIT = 30;
 const { TextArea } = Input;
 
+interface IInfoChart {
+	id: string;
+	exclusion: any;
+	xChars?: string;
+	words?: string;
+	psa_line?: any;
+	psa_link?: string;
+	keyword: string;
+	state?: any;
+	syncedAt?: any;
+	created_at?: any;
+}
+
 export default () => {
 	const { user } = useContext(AppContext);
 	const [modalAdd, setModalAdd] = useState(false);
@@ -37,6 +50,7 @@ export default () => {
 	const [dataTable, setDataTable] = useState([]);
 	const [loadingTable, setLoadingTable] = useState(true);
 	const [loadingEdit, setLoadingEdit] = useState(false);
+	const [loadingForceUpdate, setLoadingForceUpdate] = useState(false);
 	const [isHasMore, setIsHasMore] = useState(true);
 	const [modalEdit, setModalEdit] = useState(false);
 	const [form] = Form.useForm();
@@ -91,7 +105,7 @@ export default () => {
 			});
 	};
 
-	const editChart = (values) => {
+	const editChart = (values: IInfoChart) => {
 		const indexChartEdit = dataTable.findIndex((item) => item.id === values.id);
 		setLoadingEdit(true);
 		gqlClient
@@ -121,6 +135,44 @@ export default () => {
 			})
 			.catch(() => {
 				setLoadingEdit(false);
+				notification.error({
+					message: "Edit chart !",
+					description: "Something went wrong, please try again !",
+				});
+			});
+	};
+
+	const forceUpdate = (infoChart: IInfoChart) => {
+		const indexChartEdit = dataTable.findIndex(
+			(item) => item.id === infoChart.id
+		);
+		setLoadingForceUpdate(true);
+		gqlClient
+			.mutate({
+				mutation: UPDATE_DEFINED_LIST,
+				variables: {
+					idDefinedList: infoChart.id,
+					data: {
+						state: {},
+						syncedAt: moment(infoChart.created_at).add(-90, "days").format(),
+					},
+				},
+			})
+			.then(() => {
+				const newData = [...dataTable];
+				newData.splice(indexChartEdit, 1, {
+					...infoChart,
+					syncedAt: moment(infoChart.created_at).add(-90, "days").format(),
+				});
+				setDataTable(newData);
+				setLoadingForceUpdate(false);
+				notification.success({
+					message: "Edit chart !",
+					description: "Success",
+				});
+			})
+			.catch(() => {
+				setLoadingForceUpdate(false);
 				notification.error({
 					message: "Edit chart !",
 					description: "Something went wrong, please try again !",
@@ -194,35 +246,39 @@ export default () => {
 			dataIndex: "actionEdit",
 			render: (_, record) => {
 				return (
-					<div>
-						<a
+					<div
+						css={css`
+							display: flex;
+							flex-direction: column;
+						`}
+					>
+						<Button
 							css={css`
-								margin-right: 5px;
+								margin-bottom: 5px;
+								color: #36cfc9;
 							`}
 							onClick={() => openModalEdit(record)}
 						>
 							Edit
-						</a>
+						</Button>
 						<Popconfirm
 							title="Sure to delete?"
 							onConfirm={() => handleDelete(record.id)}
 						>
-							<a style={{ color: "red" }}>Delete</a>
+							<Button style={{ color: "red" }}>Delete</Button>
 						</Popconfirm>
-						{/* <p
+						<p
 							css={css`
-								margin-top: 10px;
+								margin-top: 5px;
 							`}
 						>
-							<a
-								css={css`
-									color: #ffec3d;
-								`}
-								onClick={() => openModalEdit(record)}
+							<Popconfirm
+								title="Sure to Force Update?"
+								onConfirm={() => forceUpdate(record)}
 							>
-								Force Update
-							</a>
-						</p> */}
+								<Button style={{ color: "#ffec3d" }}>Force Update</Button>
+							</Popconfirm>
+						</p>
 					</div>
 				);
 			},

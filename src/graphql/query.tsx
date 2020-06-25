@@ -9,6 +9,7 @@ export const FETCH_DEFINED_LIST = gql`
 			exclusion
 			psa_link
 			psa_line
+			created_at
 		}
 	}
 `;
@@ -207,17 +208,17 @@ export const FETCH_NAME_CARD = gql`
 export const FETCH_PROXY_SETTING = gql`
 	query fetchProxySetting {
 		setting {
-      proxy
-      id
+			proxy
+			id
 		}
 	}
 `;
 
 export const FETCH_NEEDED_CREATE_SHORTCODE = gql`
-  query neededCreateShortCode {
-    defined_list {
-      id
-      keyword
-    }
-  }
+	query neededCreateShortCode {
+		defined_list {
+			id
+			keyword
+		}
+	}
 `;
