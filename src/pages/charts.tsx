@@ -51,7 +51,6 @@ export default () => {
 	const [dataTable, setDataTable] = useState([]);
 	const [loadingTable, setLoadingTable] = useState(true);
 	const [loadingEdit, setLoadingEdit] = useState(false);
-	const [loadingForceUpdate, setLoadingForceUpdate] = useState(false);
 	const [isHasMore, setIsHasMore] = useState(true);
 	const [modalEdit, setModalEdit] = useState(false);
 	const [form] = Form.useForm();
@@ -165,14 +164,12 @@ export default () => {
 					syncedAt: moment(infoChart.created_at).add(-90, "days").format(),
 				});
 				setDataTable(newData);
-				setLoadingForceUpdate(false);
 				notification.success({
 					message: "Force update chart !",
 					description: "Success",
 				});
 			})
 			.catch(() => {
-				setLoadingForceUpdate(false);
 				notification.error({
 					message: "Force update chart !",
 					description: "Something went wrong, please try again !",

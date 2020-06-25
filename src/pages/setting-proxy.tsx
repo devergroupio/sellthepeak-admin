@@ -75,7 +75,7 @@ export default () => {
 				<Form.Item name="proxy" label="Proxy">
 					<TextArea autoSize />
 				</Form.Item>
-				<p>host:port:username:pasword</p>
+				<p>Host:Port:Type:Username:Password</p>
 				{/* <div
 					css={css`
 						display: flex;
