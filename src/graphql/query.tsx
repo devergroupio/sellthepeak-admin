@@ -231,11 +231,7 @@ export const FETCH_NEEDED_CREATE_SHORTCODE = gql`
 
 export const SEARCH_DEFINED_LIST = gql`
 	query searchCard($keyWord: String) {
-		defined_list(
-			where: {
-				_or: [{ keyword: { _like: $keyWord } }, { id: { _like: $keyWord } }]
-			}
-		) {
+		defined_list(where: { keyword: { _ilike: $keyWord } }) {
 			keyword
 			id
 		}

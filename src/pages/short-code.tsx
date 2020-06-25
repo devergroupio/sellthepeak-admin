@@ -1,6 +1,6 @@
 import AdminLayout from "../components/layouts/AdminLayout";
-import React, { useCallback, useState, useEffect, useRef } from "react";
-import { Form, Input, Select, Button, Spin, notification } from "antd";
+import React, { useCallback, useState, useRef } from "react";
+import { Form, Input, Select, Button, Empty, Spin, notification } from "antd";
 import { css } from "@emotion/core";
 import { useApolloClient } from "@apollo/react-hooks";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -35,10 +35,13 @@ const ShortCode = () => {
 		const { data, errors } = await gqlClient.query({
 			query: SEARCH_DEFINED_LIST,
 			variables: {
-				keyWord: `%${value.toLowerCase().replace(/[^A-Z0-9]+/gi, "")}%`,
+				keyWord: `%${value.trim()}%`,
 			},
 		});
 		if (errors) return null;
+		if (!data.defined_list.length) {
+			setFetching(false);
+		}
 		setOptionsChartDefine(data.defined_list);
 		setLoading(false);
 	};
@@ -70,21 +73,21 @@ const ShortCode = () => {
 			label: "Search",
 		},
 	];
-	const optionsChart = [
-		{
-			value: "switch",
-			label: "Switch Chart",
-		},
-		{
-			value: "sametime",
-			label: "Same Time Chart ",
-		},
-	];
+	// const optionsChart = [
+	// 	{
+	// 		value: "switch",
+	// 		label: "Switch Chart",
+	// 	},
+	// 	{
+	// 		value: "sametime",
+	// 		label: "Same Time Chart ",
+	// 	},
+	// ];
 	const selectApp = useCallback((value) => {
 		setSelectedApp(value);
 	}, []);
 
-  const createShortCode = (values) => {
+	const createShortCode = (values) => {
 		if (values.app && values.app === "search") {
 			setShortCode(`
       <div
@@ -92,8 +95,8 @@ const ShortCode = () => {
       app="search"
     ></div>
   `);
-    } else {
-      const IDS = values.nameChart
+		} else {
+			const IDS = values.nameChart
 				? values.nameChart.length > 1
 					? values.nameChart.map((item) => item.value).join(",")
 					: values.nameChart[0].value
@@ -101,7 +104,7 @@ const ShortCode = () => {
 			const appContent = values.app ? values.app : "chart";
 			const context = {
 				ids: [IDS],
-				multi: values.type ? (values.type === "switch" ? false : true) : false,
+				// multi: values.type ? (values.type === "switch" ? false : true) : false,
 			};
 			const shortCode = `
       <div
@@ -165,11 +168,13 @@ const ShortCode = () => {
 								onChange={selectApp}
 							>
 								{optionsApp.map((opt) => (
-									<Option key={opt.value} value={opt.value}>{opt.label}</Option>
+									<Option key={opt.value} value={opt.value}>
+										{opt.label}
+									</Option>
 								))}
 							</Select>
 						</Form.Item>
-						{selectedApp === "chart" && (
+						{/* {selectedApp === "chart" && (
 							<Form.Item
 								label="Type"
 								name="type"
@@ -184,11 +189,13 @@ const ShortCode = () => {
 									`}
 								>
 									{optionsChart.map((opt) => (
-										<Option key={opt.value} value={opt.value}>{opt.label}</Option>
+										<Option key={opt.value} value={opt.value}>
+											{opt.label}
+										</Option>
 									))}
 								</Select>
 							</Form.Item>
-						)}
+						)} */}
 						{selectedApp === "chart" && (
 							<Form.Item
 								label="Name Chart"
@@ -205,7 +212,27 @@ const ShortCode = () => {
 									labelInValue
 									value={keySearch}
 									placeholder="Select users"
-									notFoundContent={fetching ? <Spin size="small" /> : null}
+									notFoundContent={
+										fetching ? (
+											<Spin size="small" />
+										) : (
+											<Empty
+												css={css`
+													.ant-select-item-empty {
+														padding: 0;
+													}
+													.ant-empty-image {
+														height: auto;
+														margin: 0;
+														.ant-empty-img-default {
+															width: 30px;
+															height: 30px;
+														}
+													}
+												`}
+											/>
+										)
+									}
 									filterOption={false}
 									onSearch={debounce(fetchDefinedList, 300)}
 									onChange={handleChange}
