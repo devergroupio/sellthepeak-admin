@@ -38,6 +38,7 @@
     "react-paginate": "^6.3.2",
     "react-table-v6": "^6.8.6",
     "react-use-localstorage": "^3.4.1",
+    "read-excel-file": "^4.0.6",
     "yup": "^0.29.1"
   },
   "devDependencies": {

@@ -21,6 +21,7 @@ import ModalAddChart from "~@/components/ModalAddChart";
 
 import AppContext from "~@/components/AppProvider";
 import Redirect from "../components/Redirect";
+import ModalAddExcelFile from "~@/components/ModalAddExcelFile";
 
 const LIMIT = 30;
 const { TextArea } = Input;
@@ -28,6 +29,7 @@ const { TextArea } = Input;
 export default () => {
 	const { user } = useContext(AppContext);
 	const [modalAdd, setModalAdd] = useState(false);
+	const [modalAddExcel, setModalAddExcel] = useState(false);
 	if (!user) {
 		return <Redirect to="/login" />;
 	}
@@ -44,6 +46,7 @@ export default () => {
 		setLoadingTable(true);
 		const { data, errors } = await gqlClient.query({
 			query: FETCH_DEFINED_LIST,
+			fetchPolicy: "no-cache",
 			variables: {
 				limit: LIMIT,
 				offset: dataTable.length,
@@ -109,7 +112,7 @@ export default () => {
 				const newData = [...dataTable];
 				newData.splice(indexChartEdit, 1, values);
 				setDataTable(newData);
-        setModalEdit(false);
+				setModalEdit(false);
 				setLoadingEdit(false);
 				notification.success({
 					message: "Edit chart !",
@@ -196,8 +199,6 @@ export default () => {
 							css={css`
 								margin-right: 5px;
 							`}
-							// @TODO: fix
-							// disabled={editingKey !== "" ? true : false}
 							onClick={() => openModalEdit(record)}
 						>
 							Edit
@@ -220,17 +221,38 @@ export default () => {
 
 	return (
 		<AdminLayout>
-			<Button
-				type="primary"
-				color="green"
-				icon={<PlusSquareOutlined />}
-				onClick={() => setModalAdd(true)}
+			<div
 				css={css`
-					margin-bottom: 10px;
+					display: flex;
+					flex-wrap: wrap;
 				`}
 			>
-				Add chart
-			</Button>
+				<Button
+					type="primary"
+					color="green"
+					icon={<PlusSquareOutlined />}
+					onClick={() => setModalAdd(true)}
+					css={css`
+						margin-bottom: 10px;
+						margin-right: 5px;
+					`}
+				>
+					Add chart
+				</Button>
+				<Button
+					type="primary"
+					icon={<PlusSquareOutlined />}
+					onClick={() => setModalAddExcel(true)}
+				>
+					Upload Excel file
+				</Button>
+			</div>
+			{modalAddExcel && (
+				<ModalAddExcelFile
+					show={modalAddExcel}
+					onHideModal={() => setModalAddExcel(false)}
+				/>
+			)}
 			{modalAdd && (
 				<ModalAddChart
 					show={modalAdd}

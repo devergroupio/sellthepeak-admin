@@ -30,7 +30,7 @@ const ModalAddChart = ({ show, onHideModal, addnewChart }) => {
 				mutation: INSERT_DEFINED_LIST,
 				variables: {
 					item: {
-						id: `${values.id}`,
+						id: `${values.keyword.toLowerCase().replace(/[^A-Z0-9]+/gi, "")}`,
 						keyword: `${values.keyword}`,
 						exclusion: { words: values.words, xchars: values.xchars },
 						psa_line: values.psa_line,
