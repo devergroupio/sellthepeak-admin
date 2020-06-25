@@ -4,8 +4,12 @@ import { Form, Input, Select, Button, Spin, notification } from "antd";
 import { css } from "@emotion/core";
 import { useApolloClient } from "@apollo/react-hooks";
 import CopyToClipboard from "react-copy-to-clipboard";
+import debounce from "lodash/debounce";
 
-import { FETCH_NEEDED_CREATE_SHORTCODE } from "~@/graphql/query";
+import {
+	// FETCH_NEEDED_CREATE_SHORTCODE,
+	SEARCH_DEFINED_LIST,
+} from "~@/graphql/query";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -17,22 +21,45 @@ const ShortCode = () => {
 	const [selectedApp, setSelectedApp] = useState("chart");
 	const [shortCode, setShortCode] = useState("");
 	const [disableCreate, setDisableCreate] = useState(true);
-	const [optionsChartDefine, setOptionsChartDefine] = useState<
-		[{ id: string; keyword: string }]
-	>(null);
-	const [loading, setLoading] = useState(true);
+	// const [optionsChartDefine, setOptionsChartDefine] = useState<
+	// 	[{ id: string; keyword: string }]
+	// >(null);
+	const [loading, setLoading] = useState(false);
+	const [optionsChartDefine, setOptionsChartDefine] = useState([]);
+	const [keySearch, setKeySearch] = useState([]);
+	const [fetching, setFetching] = useState(false);
 
-	const getNeededCreateShortCode = async () => {
+	const fetchDefinedList = async (value) => {
+		setOptionsChartDefine([]);
+		setFetching(true);
 		const { data, errors } = await gqlClient.query({
-			query: FETCH_NEEDED_CREATE_SHORTCODE,
+			query: SEARCH_DEFINED_LIST,
+			variables: {
+				keyWord: `%${value.toLowerCase().replace(/[^A-Z0-9]+/gi, "")}%`,
+			},
 		});
 		if (errors) return null;
 		setOptionsChartDefine(data.defined_list);
 		setLoading(false);
 	};
-	useEffect(() => {
-		getNeededCreateShortCode();
-	}, []);
+
+	const handleChange = (value) => {
+		setKeySearch(value);
+		setOptionsChartDefine([]);
+		setFetching(false);
+	};
+
+	// const getNeededCreateShortCode = async () => {
+	// 	const { data, errors } = await gqlClient.query({
+	// 		query: FETCH_NEEDED_CREATE_SHORTCODE,
+	// 	});
+	// 	if (errors) return null;
+	// 	setOptionsChartDefine(data.defined_list);
+	// 	setLoading(false);
+	// };
+	// useEffect(() => {
+	// 	getNeededCreateShortCode();
+	// }, []);
 	const optionsApp = [
 		{
 			value: "chart",
@@ -57,7 +84,7 @@ const ShortCode = () => {
 		setSelectedApp(value);
 	}, []);
 
-	const createShortCode = (values) => {
+  const createShortCode = (values) => {
 		if (values.app && values.app === "search") {
 			setShortCode(`
       <div
@@ -65,10 +92,15 @@ const ShortCode = () => {
       app="search"
     ></div>
   `);
-		} else {
+    } else {
+      const IDS = values.nameChart
+				? values.nameChart.length > 1
+					? values.nameChart.map((item) => item.value).join(",")
+					: values.nameChart[0].value
+				: [];
 			const appContent = values.app ? values.app : "chart";
 			const context = {
-				ids: values.nameChart ? values.nameChart : [optionsChartDefine[0].id],
+				ids: [IDS],
 				multi: values.type ? (values.type === "switch" ? false : true) : false,
 			};
 			const shortCode = `
@@ -133,7 +165,7 @@ const ShortCode = () => {
 								onChange={selectApp}
 							>
 								{optionsApp.map((opt) => (
-									<Option value={opt.value}>{opt.label}</Option>
+									<Option key={opt.value} value={opt.value}>{opt.label}</Option>
 								))}
 							</Select>
 						</Form.Item>
@@ -152,12 +184,12 @@ const ShortCode = () => {
 									`}
 								>
 									{optionsChart.map((opt) => (
-										<Option value={opt.value}>{opt.label}</Option>
+										<Option key={opt.value} value={opt.value}>{opt.label}</Option>
 									))}
 								</Select>
 							</Form.Item>
 						)}
-						{optionsChartDefine && selectedApp === "chart" && (
+						{selectedApp === "chart" && (
 							<Form.Item
 								label="Name Chart"
 								name="nameChart"
@@ -168,9 +200,21 @@ const ShortCode = () => {
 									{ required: true, message: "Please select the names chart" },
 								]}
 							>
-								<Select mode="multiple" showSearch>
-									{optionsChartDefine.map((opt) => (
-										<Option value={opt.id}>{opt.keyword}</Option>
+								<Select
+									mode="multiple"
+									labelInValue
+									value={keySearch}
+									placeholder="Select users"
+									notFoundContent={fetching ? <Spin size="small" /> : null}
+									filterOption={false}
+									onSearch={debounce(fetchDefinedList, 300)}
+									onChange={handleChange}
+									style={{ width: "100%" }}
+								>
+									{optionsChartDefine.map((d) => (
+										<Option key={d.id + Math.random().toString()} value={d.id}>
+											{d.keyword}
+										</Option>
 									))}
 								</Select>
 							</Form.Item>
