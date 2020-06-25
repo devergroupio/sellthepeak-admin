@@ -38,7 +38,7 @@ const ModalAddChart = ({ show, onHideModal, addnewChart }) => {
 					},
 					on_confict: {
 						constraint: "defined_list_pkey",
-						update_columns: [],
+						update_columns: ["exclusion", "psa_line", "psa_link"],
 					},
 				},
 			})

@@ -209,6 +209,20 @@ export default () => {
 						>
 							<a style={{ color: "red" }}>Delete</a>
 						</Popconfirm>
+						{/* <p
+							css={css`
+								margin-top: 10px;
+							`}
+						>
+							<a
+								css={css`
+									color: #ffec3d;
+								`}
+								onClick={() => openModalEdit(record)}
+							>
+								Force Update
+							</a>
+						</p> */}
 					</div>
 				);
 			},
