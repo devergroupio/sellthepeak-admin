@@ -9,6 +9,7 @@ export const FETCH_DEFINED_LIST = gql`
 			exclusion
 			psa_link
 			psa_line
+			created_at
 		}
 	}
 `;
@@ -24,8 +25,8 @@ export const FETCH_TOTAL_DEFINED_LIST = gql`
 `;
 
 export const FETCH_DELETE_REQUESTION = gql`
-	query fetchDeteteRequestion {
-		delete_requestion(order_by: { id: desc }) {
+	query fetchDeteteRequestion($limit: Int!, $offset: Int!) {
+		delete_requestion(limit: $limit, offset: $offset, order_by: { id: desc }) {
 			id
 			item_id
 			item {
@@ -38,6 +39,12 @@ export const FETCH_DELETE_REQUESTION = gql`
 				soldDate
 				soldType
 				_data
+				defined_list_items {
+					defined_list {
+						keyword
+						id
+					}
+				}
 			}
 		}
 	}
@@ -207,17 +214,26 @@ export const FETCH_NAME_CARD = gql`
 export const FETCH_PROXY_SETTING = gql`
 	query fetchProxySetting {
 		setting {
-      proxy
-      id
+			proxy
+			id
 		}
 	}
 `;
 
 export const FETCH_NEEDED_CREATE_SHORTCODE = gql`
-  query neededCreateShortCode {
-    defined_list {
-      id
-      keyword
-    }
-  }
+	query neededCreateShortCode {
+		defined_list {
+			id
+			keyword
+		}
+	}
+`;
+
+export const SEARCH_DEFINED_LIST = gql`
+	query searchCard($keyWord: String) {
+		defined_list(where: { keyword: { _ilike: $keyWord } }) {
+			keyword
+			id
+		}
+	}
 `;

@@ -24,6 +24,7 @@
     "graphql": "^15.1.0",
     "graphql-tag": "^2.10.3",
     "less": "^3.11.3",
+    "moment": "^2.27.0",
     "next": "^9.4.4",
     "next-with-apollo": "^5.0.1",
     "node-sass": "^4.14.1",
@@ -33,11 +34,13 @@
     "react-chartjs-2": "^2.9.0",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.13.1",
+    "react-infinite-scroller": "^1.2.4",
     "react-lazyload": "^2.6.8",
     "react-no-ssr": "^1.1.0",
     "react-paginate": "^6.3.2",
     "react-table-v6": "^6.8.6",
     "react-use-localstorage": "^3.4.1",
+    "read-excel-file": "^4.0.6",
     "yup": "^0.29.1"
   },
   "devDependencies": {

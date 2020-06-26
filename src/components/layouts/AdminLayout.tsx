@@ -15,7 +15,6 @@ const { Header, Sider, Content } = Layout;
 export default (props) => {
   const router = useRouter();
   const selectedKey = router.route;
-  console.log(router);
 
   const [collapsed, setCollapsed] = useState(false);
   const toggle = () => setCollapsed(!collapsed);

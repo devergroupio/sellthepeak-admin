@@ -1,14 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext,useEffect, useState } from "react";
 import AdminLayout from "../components/layouts/AdminLayout";
 import { Form, notification, Input, Button } from "antd";
 import { useApolloClient } from "@apollo/react-hooks";
 import { FETCH_PROXY_SETTING } from "~@/graphql/query";
 import { UPDATE_PROXY_SETTING } from "~@/graphql/mutation";
-import { css } from "@emotion/core";
+import AppContext from "~@/components/AppProvider";
+import Redirect from "~@/components/Redirect";
+// import { css } from "@emotion/core";
 
 const { TextArea } = Input;
 
 export default () => {
+	const { user } = useContext(AppContext);
+	if (!user) {
+		return <Redirect to="/login" />;
+	}
 	const [disable, setDisable] = useState(true);
 	const hsrClient = useApolloClient();
 	const [form] = Form.useForm();
@@ -69,7 +75,7 @@ export default () => {
 				<Form.Item name="proxy" label="Proxy">
 					<TextArea autoSize />
 				</Form.Item>
-				<p>host:port:username:pasword</p>
+				<p>Host:Port:Type:Username:Password</p>
 				{/* <div
 					css={css`
 						display: flex;
