@@ -9,6 +9,7 @@ export const FETCH_DEFINED_LIST = gql`
 			exclusion
 			psa_link
 			psa_line
+			psa_variant
 			created_at
 		}
 	}

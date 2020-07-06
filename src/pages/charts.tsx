@@ -37,6 +37,7 @@ interface IInfoChart {
 	keyword: string;
 	state?: any;
 	syncedAt?: any;
+	psa_variant?: any;
 	created_at?: any;
 }
 
@@ -119,6 +120,7 @@ export default () => {
 						},
 						psa_line: values.psa_line,
 						psa_link: values.psa_link,
+						psa_variant: values.psa_variant,
 					},
 				},
 			})
@@ -196,6 +198,10 @@ export default () => {
 				value: record.psa_line,
 			},
 			{
+				name: "psa_variant",
+				value: record.psa_variant,
+			},
+			{
 				name: "id",
 				value: record.id,
 			},
@@ -237,6 +243,11 @@ export default () => {
 			title: "Psa line",
 			dataIndex: "psa_line",
 			editable: true,
+		},
+		{
+			title: "PSA variant",
+			dataIndex: "psa_variant",
+			editable: true
 		},
 		{
 			title: "Action",
@@ -370,6 +381,9 @@ export default () => {
 					<Form.Item name="xchars" label="Xchars">
 						<Input />
 					</Form.Item>
+					<Form.Item name="psa_variant" label="PSA variant">
+						<Input />
+					</Form.Item>
 					<Form.Item
 						name="psa_line"
 						label="PSA line"
@@ -380,7 +394,7 @@ export default () => {
 							},
 						]}
 					>
-						<Input />
+						<Input type="number" />
 					</Form.Item>
 					<Form.Item
 						name="psa_link"

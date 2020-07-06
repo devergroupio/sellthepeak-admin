@@ -50,6 +50,7 @@ const ModalAddChart = ({ show, onHideModal, addnewChart }) => {
 					xchars: "",
 					psa_link: "",
 					psa_line: null,
+					psa_variant: null
 				});
 				notification.success({
 					message: "Add new chart !",
@@ -62,6 +63,7 @@ const ModalAddChart = ({ show, onHideModal, addnewChart }) => {
 					exclusion: { words: values.words, xchars: values.xchars },
 					psa_line: values.psa_line,
 					psa_link: values.psa_link,
+					psa_variant: values.psa_variant,
 				});
 			})
 			.catch(() =>
@@ -136,7 +138,13 @@ const ModalAddChart = ({ show, onHideModal, addnewChart }) => {
 						},
 					]}
 				>
-					<Input type="text" placeholder="" />
+					<Input type="number" placeholder="" />
+				</Form.Item>
+				<Form.Item
+					name="psa_variant"
+					label="PSA variant"
+				>
+					<Input placeholder="" />
 				</Form.Item>
 				<Form.Item name="words" label="Exclusions" rules={[]}>
 					<Input type="search" placeholder="" />
