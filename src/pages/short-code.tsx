@@ -98,14 +98,15 @@ const ShortCode = () => {
 		} else {
 			const IDS = values.nameChart
 				? values.nameChart.length > 1
-					? values.nameChart.map((item) => item.value).join(",")
+					? values.nameChart.map((item) => item.value)
 					: values.nameChart[0].value
 				: [];
 			const appContent = values.app ? values.app : "chart";
 			const context = {
-				ids: [IDS],
+				ids: IDS,
 				// multi: values.type ? (values.type === "switch" ? false : true) : false,
 			};
+			console.log(context);
 			const shortCode = `
       <div
       class="sellthepeak_app"
