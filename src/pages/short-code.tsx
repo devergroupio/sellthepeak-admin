@@ -96,10 +96,8 @@ const ShortCode = () => {
     ></div>
   `);
 		} else {
-			const IDS = values.nameChart
-				? values.nameChart.length > 1
-					? values.nameChart.map((item) => item.value)
-					: values.nameChart[0].value
+			const IDS = values.nameChart.length
+				? values.nameChart.map((item) => item.value)
 				: [];
 			const appContent = values.app ? values.app : "chart";
 			const context = {
