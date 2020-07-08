@@ -247,7 +247,7 @@ export default () => {
 		{
 			title: "PSA variant",
 			dataIndex: "psa_variant",
-			editable: true
+			editable: true,
 		},
 		{
 			title: "Action",
@@ -384,28 +384,10 @@ export default () => {
 					<Form.Item name="psa_variant" label="PSA variant">
 						<Input />
 					</Form.Item>
-					<Form.Item
-						name="psa_line"
-						label="PSA line"
-						rules={[
-							{
-								required: true,
-								message: "Please input your PSA line!",
-							},
-						]}
-					>
+					<Form.Item name="psa_line" label="PSA line">
 						<Input type="number" />
 					</Form.Item>
-					<Form.Item
-						name="psa_link"
-						label="PSA link"
-						rules={[
-							{
-								required: true,
-								message: "Please input your PSA link!",
-							},
-						]}
-					>
+					<Form.Item name="psa_link" label="PSA link">
 						<Input />
 					</Form.Item>
 					<Button

@@ -21,6 +21,7 @@ const ModalAddChart = ({ show, onHideModal, addnewChart }) => {
 				xchars: "",
 				psa_link: "",
 				psa_line: null,
+				psa_variant: "",
 			}),
 		[]
 	);
@@ -119,24 +120,12 @@ const ModalAddChart = ({ show, onHideModal, addnewChart }) => {
 				<Form.Item
 					name="psa_link"
 					label="PSA link"
-					rules={[
-						{
-							required: true,
-							message: "Please input your PSA link!",
-						},
-					]}
 				>
 					<Input placeholder="" />
 				</Form.Item>
 				<Form.Item
 					name="psa_line"
 					label="PSA line"
-					rules={[
-						{
-							required: true,
-							message: "Please input your PSA line!",
-						},
-					]}
 				>
 					<Input type="number" placeholder="" />
 				</Form.Item>
