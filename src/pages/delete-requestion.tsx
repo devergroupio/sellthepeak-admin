@@ -137,7 +137,10 @@ export default () => {
         offset: dataTable.length,
       },
     });
-    if (errors) return null;
+    if (errors) {
+      setLoading(false);
+      return null;
+    }
     const serializeData = data.delete_requestion.map((element) => {
       return {
         id: element.item_id,
