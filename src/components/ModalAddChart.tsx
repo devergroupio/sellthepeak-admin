@@ -129,9 +129,9 @@ const ModalAddChart = ({ show, onHideModal, addnewChart }) => {
         <Form.Item name="words" label="Exclusions" rules={[]}>
           <Input type="search" placeholder="" />
         </Form.Item>
-        <Form.Item name="xchars" label="Special characters" rules={[]}>
+        {/* <Form.Item name="xchars" label="Special characters" rules={[]}>
           <Input type="search" placeholder="" />
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item>
           <Button
