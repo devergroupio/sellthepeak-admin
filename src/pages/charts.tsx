@@ -22,6 +22,7 @@ import { DELETE_DEFINED_LIST, UPDATE_DEFINED_LIST } from "~@/graphql/mutation";
 
 import ModalAddChart from "~@/components/ModalAddChart";
 
+import ExportExcel from "~@/components/ExportExcel";
 import AppContext from "~@/components/AppProvider";
 import Redirect from "../components/Redirect";
 import ModalAddExcelFile from "~@/components/ModalAddExcelFile";
@@ -228,12 +229,7 @@ export default () => {
   // Search keyword
   const getColumnSearchProps = (dataIndex) => {
     return {
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }) => {
+      filterDropdown: ({ setSelectedKeys, selectedKeys, clearFilters }) => {
         const onPressEnter = () => {
           setSearchKeyword(selectedKeys[0]);
           setDataTable([]);
@@ -304,7 +300,7 @@ export default () => {
     {
       title: "words",
       dataIndex: "words",
-      width: "100px",
+      width: "300px",
     },
 
     {
@@ -390,6 +386,9 @@ export default () => {
         >
           Upload Excel file
         </Button>
+        {dataTable.length !== 0 && dataTable && (
+          <ExportExcel data={dataTable} />
+        )}
       </div>
       {modalAddExcel && (
         <ModalAddExcelFile
