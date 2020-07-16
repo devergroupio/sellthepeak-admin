@@ -104,7 +104,7 @@ const ExportExcel = (props: { data: IInfoChart[] }) => {
   const convertData = data.map((chart) => {
     return [
       {
-        value: chart.id,
+        value: chart.keyword,
         style: { font: { sz: "10" } },
       },
       {
