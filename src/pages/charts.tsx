@@ -52,7 +52,7 @@ export default () => {
     return <Redirect to="/login" />;
   }
   const searchInput = React.useRef(null);
-
+  const [exportData, setExportData] = useState([]);
   const gqlClient = useApolloClient();
   const [dataTable, setDataTable] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -61,12 +61,11 @@ export default () => {
   const [isHasMore, setIsHasMore] = useState(true);
   const [modalEdit, setModalEdit] = useState(false);
   const [form] = Form.useForm();
+  const [formSearch] = Form.useForm();
   const [formEdit] = Form.useForm();
 
   const getMoreDefinedList = useCallback(async () => {
-    console.log("run");
     setLoadingTable(true);
-    console.log(searchKeyword);
     const { data, errors } = await gqlClient.query({
       query: FETCH_DEFINED_LIST,
       fetchPolicy: "no-cache",
@@ -226,58 +225,19 @@ export default () => {
     setDataTable([data, ...dataTable]);
   };
 
-  // Search keyword
-  const getColumnSearchProps = (dataIndex) => {
-    return {
-      filterDropdown: ({ setSelectedKeys, selectedKeys, clearFilters }) => {
-        const onPressEnter = () => {
-          setSearchKeyword(selectedKeys[0]);
-          setDataTable([]);
-        };
-        const onClickSearch = () => {
-          setSearchKeyword(selectedKeys[0]);
-          setDataTable([]);
-        };
-        const resetSearch = () => {
-          setSearchKeyword("");
-          setDataTable([]);
-          clearFilters();
-        };
-        return (
-          <div style={{ padding: 8 }}>
-            <Input
-              ref={searchInput}
-              autoFocus={true}
-              placeholder={`Search ${dataIndex}`}
-              value={selectedKeys[0]}
-              onChange={(e) =>
-                setSelectedKeys(e.target.value ? [e.target.value] : [])
-              }
-              onPressEnter={onPressEnter}
-              style={{ width: 188, marginBottom: 8, display: "block" }}
-            />
-            <Space>
-              <Button
-                type="primary"
-                onClick={onClickSearch}
-                icon={<SearchOutlined />}
-                size="small"
-                style={{ width: 90 }}
-              >
-                Search
-              </Button>
-              <Button onClick={resetSearch} size="small" style={{ width: 90 }}>
-                Reset
-              </Button>
-            </Space>
-          </div>
-        );
-      },
-      filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
-      ),
-    };
+  //Search
+  const searchKeywordData = (values) => {
+    setDataTable([]);
+    setSearchKeyword(values.keySearch);
+    setExportData([]);
   };
+  const rowSelection = {
+    selectedRows: exportData,
+    onChange: (selectedRowKeys, selectedRows) => {
+      setExportData([...selectedRows]);
+    },
+  };
+  // End Search
 
   const columns: Array<ColumnProps<IInfoChart>> = [
     {
@@ -290,7 +250,6 @@ export default () => {
       sorter: (a, b) => {
         return a.keyword.localeCompare(b.keyword);
       },
-      ...getColumnSearchProps("title"),
     },
     {
       title: "SyncedAt",
@@ -359,36 +318,77 @@ export default () => {
     },
   ];
 
+  const changePageTableData = (page, pageSize) => {
+    if (isHasMore) {
+      const isLastPage = dataTable.length / page === pageSize;
+      if (isLastPage) {
+        getMoreDefinedList();
+      }
+    }
+  };
+
   return (
     <AdminLayout>
       <div
         css={css`
           display: flex;
           flex-wrap: wrap;
+          justify-content: space-between;
         `}
       >
-        <Button
-          type="primary"
-          color="green"
-          icon={<PlusSquareOutlined />}
-          onClick={() => setModalAdd(true)}
+        <div
           css={css`
-            margin-bottom: 10px;
-            margin-right: 5px;
+            display: flex;
           `}
         >
-          Add chart
-        </Button>
-        <Button
-          type="primary"
-          icon={<PlusSquareOutlined />}
-          onClick={() => setModalAddExcel(true)}
+          <Button
+            type="primary"
+            color="green"
+            icon={<PlusSquareOutlined />}
+            onClick={() => setModalAdd(true)}
+            css={css`
+              margin-bottom: 10px;
+              margin-right: 5px;
+            `}
+          >
+            Add chart
+          </Button>
+          <Button
+            type="primary"
+            icon={<PlusSquareOutlined />}
+            onClick={() => setModalAddExcel(true)}
+          >
+            Upload Excel file
+          </Button>
+          {exportData.length !== 0 && dataTable && (
+            <ExportExcel data={exportData} />
+          )}
+        </div>
+        <Form
+          form={formSearch}
+          css={css`
+            display: flex;
+          `}
+          onFinish={searchKeywordData}
         >
-          Upload Excel file
-        </Button>
-        {dataTable.length !== 0 && dataTable && (
-          <ExportExcel data={dataTable} />
-        )}
+          <Form.Item name="keySearch">
+            <Input
+              type="text"
+              prefix={<SearchOutlined />}
+              value={searchKeyword}
+            />
+          </Form.Item>
+          <Button
+            htmlType="submit"
+            type="primary"
+            css={css`
+              margin-left: 10px;
+            `}
+            onClick={searchKeywordData}
+          >
+            Search
+          </Button>
+        </Form>
       </div>
       {modalAddExcel && (
         <ModalAddExcelFile
@@ -468,15 +468,20 @@ export default () => {
         </Form>
       </Modal>
       <Form form={form} component={false}>
-        <InfiniteScroll loadMore={getMoreDefinedList} hasMore={isHasMore}>
-          <Table
-            columns={columns}
-            rowKey={(record) => record.id}
-            rowClassName="editable-row"
-            dataSource={dataTable}
-            loading={loadingTable}
-          />
-        </InfiniteScroll>
+        <Table
+          rowSelection={{
+            type: "checkbox",
+            ...rowSelection,
+          }}
+          columns={columns}
+          rowKey={(record) => record.id}
+          rowClassName="editable-row"
+          dataSource={dataTable}
+          loading={loadingTable}
+          pagination={{
+            onChange: changePageTableData,
+          }}
+        />
       </Form>
     </AdminLayout>
   );
