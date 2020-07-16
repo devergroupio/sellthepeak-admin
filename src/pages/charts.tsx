@@ -13,7 +13,6 @@ import { ColumnProps } from "antd/es/table";
 import React, { useCallback, useState, useContext, useEffect } from "react";
 import { useApolloClient } from "@apollo/react-hooks";
 import { FETCH_DEFINED_LIST } from "~@/graphql/query";
-import InfiniteScroll from "react-infinite-scroller";
 import _ from "lodash";
 import { PlusSquareOutlined, SearchOutlined } from "@ant-design/icons";
 import { css } from "@emotion/core";
@@ -51,7 +50,6 @@ export default () => {
   if (!user) {
     return <Redirect to="/login" />;
   }
-  const searchInput = React.useRef(null);
   const [exportData, setExportData] = useState([]);
   const gqlClient = useApolloClient();
   const [dataTable, setDataTable] = useState([]);
@@ -480,6 +478,8 @@ export default () => {
           loading={loadingTable}
           pagination={{
             onChange: changePageTableData,
+            pageSize: 10,
+            showSizeChanger: false,
           }}
         />
       </Form>
