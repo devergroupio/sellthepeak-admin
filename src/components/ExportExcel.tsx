@@ -104,7 +104,7 @@ const ExportExcel = (props: { data: IInfoChart[] }) => {
   const convertData = data.map((chart) => {
     return [
       {
-        value: chart.id,
+        value: chart.keyword,
         style: { font: { sz: "10" } },
       },
       {
@@ -130,8 +130,6 @@ const ExportExcel = (props: { data: IInfoChart[] }) => {
     ];
   });
   dataExcel = { ...dataExcel, data: convertData };
-  console.log([dataExcel]);
-  console.log(multiDataSet);
   return (
     <div>
       <ExcelFile

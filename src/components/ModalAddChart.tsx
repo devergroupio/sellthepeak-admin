@@ -48,7 +48,7 @@ const ModalAddChart = ({ show, onHideModal, addnewChart }) => {
           id: "",
           keyword: "",
           words: "",
-          xchars: "",
+          xchars: "?",
           psa_link: "",
           psa_line: null,
           psa_variant: null,
