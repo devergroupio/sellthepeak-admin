@@ -6,6 +6,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { Line } from "react-chartjs-2";
 import { FETCH_DAY_ANALYSIS_ITEMS } from "~@/graphql/query";
 import { css } from "@emotion/core";
+import ModalSalesByDay from "~@/components/ModalSalesByDay";
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -126,6 +127,13 @@ const ModalChart = ({ show, onHideModal, infoChart }) => {
 
 	return (
 		<div className="">
+			{showModalDay && (
+				<ModalSalesByDay
+					show={showModalDay}
+					onHideModal={() => setShowModalDay(false)}
+					infoDay={{ date: selectDay, id: infoChart.id }}
+				/>
+			)}
 			<Modal
 				width="80vw"
 				title={infoChart.keyword}
@@ -153,9 +161,10 @@ const ModalChart = ({ show, onHideModal, infoChart }) => {
 								if (elems.length) {
 									const datasetIndex = elems[0]._datasetIndex;
 									const indx = elems[0]._index;
-									setSelectDay(`${Object.values(dataChart)[datasetIndex][indx].year}-${
-											Object.values(dataChart)[datasetIndex][indx].month
-										}-${Object.values(dataChart)[datasetIndex][indx].day}`,
+									setSelectDay(
+										`${dataChart[indx].year}-${
+											dataChart[indx].month
+										}-${dataChart[indx].day}`
 									);
 									setShowModalDay(true);
 								}
