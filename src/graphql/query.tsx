@@ -31,7 +31,12 @@ export const FETCH_TOTAL_DEFINED_LIST = gql`
 
 export const FETCH_DELETE_REQUESTION = gql`
 	query fetchDeteteRequestion($limit: Int!, $offset: Int!) {
-		delete_requestion(limit: $limit, offset: $offset, order_by: { id: desc }) {
+		delete_requestion(
+			where: { item: { isDelete: { _eq: false } } }
+			limit: $limit
+			offset: $offset
+			order_by: { id: desc }
+		) {
 			id
 			item_id
 			item {
@@ -43,6 +48,7 @@ export const FETCH_DELETE_REQUESTION = gql`
 				price
 				soldDate
 				soldType
+				isDelete
 				_data
 				defined_list_items {
 					defined_list {
