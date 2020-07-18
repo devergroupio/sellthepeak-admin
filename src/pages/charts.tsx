@@ -59,7 +59,7 @@ export default () => {
 	const [loadingEdit, setLoadingEdit] = useState(false);
 	const [isHasMore, setIsHasMore] = useState(true);
 	const [modalEdit, setModalEdit] = useState(false);
-	const [infoChart, setInfoChart] = useState({id: "", keyword: ""});
+	const [infoChart, setInfoChart] = useState({ id: "", keyword: "" });
 	const [modalChart, setModalChart] = useState(false);
 	const [form] = Form.useForm();
 	const [formSearch] = Form.useForm();
@@ -308,7 +308,7 @@ export default () => {
 							`}
 							onClick={() => {
 								setModalChart(true);
-                setInfoChart({ id: record.id, keyword: record.keyword });
+								setInfoChart({ id: record.id, keyword: record.keyword });
 							}}
 						>
 							Chart
@@ -419,8 +419,8 @@ export default () => {
 			{modalChart && (
 				<ModalChart
 					show={modalChart}
-          onHideModal={() => setModalChart(false)}
-          infoChart={infoChart}
+					onHideModal={() => setModalChart(false)}
+					infoChart={infoChart}
 				/>
 			)}
 			<Modal
