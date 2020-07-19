@@ -183,7 +183,12 @@ export const FETCH_MORE_DEFINED_ITEM = gql`
 		$offset: Int!
 	) {
 		defined_list_item(
-			where: { defined_list_id: { _eq: $list_id } }
+			where: {
+				_and: [
+					{ defined_list_id: { _eq: $list_id } }
+					{ item: { isDelete: { _eq: false } } }
+				]
+			}
 			limit: $limit
 			offset: $offset
 		) {
@@ -257,7 +262,12 @@ export const FETCH_LOW_DEFINED_ITEM = gql`
 		$offset: Int!
 	) {
 		defined_list_item(
-			where: { defined_list_id: { _eq: $list_id } }
+			where: {
+				_and: [
+					{ defined_list_id: { _eq: $list_id } }
+					{ item: { isDelete: { _eq: false } } }
+				]
+			}
 			order_by: { item: { price: asc } }
 			limit: $limit
 			offset: $offset
@@ -286,7 +296,12 @@ export const FETCH_HIGH_DEFINED_ITEM = gql`
 		$offset: Int!
 	) {
 		defined_list_item(
-			where: { defined_list_id: { _eq: $list_id } }
+			where: {
+				_and: [
+					{ defined_list_id: { _eq: $list_id } }
+					{ item: { isDelete: { _eq: false } } }
+				]
+			}
 			order_by: { item: { price: desc } }
 			limit: $limit
 			offset: $offset
