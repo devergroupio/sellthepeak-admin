@@ -5,50 +5,11 @@ import ReactTable from "react-table-v6";
 import { Button, Modal, Table } from "antd";
 import { format } from "date-fns";
 import { INSERT_DELETE_REQUESTION } from "~@/graphql/mutation";
-import OfferResult from "~@/components/interface/OfferResult";
+import PriceState from "~@/components/PriceState";
+import { GetPriceSale } from "~@/utils/";
 import { css } from "@emotion/core";
 import "react-table-v6/react-table.css";
 import "~@/components/interface/style.scss";
-
-const priceState = (data) => {
-	switch (data.soldType) {
-		case "AUCTION":
-			return (
-				<>
-					<p className="price auction">
-						Sale Price:{" "}
-						<a href={data.link} target="_blank">
-							${data.price.toFixed(2)}
-						</a>
-					</p>
-					<p className="ebay-shipping-price">
-						Shipping:{" "}
-						<span>{data.shipping === 0 ? "FREE" : `$${data.shipping}`}</span>
-					</p>
-				</>
-			);
-		case "OFFER":
-			return (
-				<>
-					<OfferResult data={data} />
-				</>
-			);
-		case "FIXED":
-			return (
-				<>
-					<p className="price fixed">
-						Sale Price: <span>${data.price.toFixed(2)}</span>
-					</p>
-					<p className="ebay-shipping-price">
-						Shipping:{" "}
-						<span> {data.shipping === 0 ? "FREE" : `$${data.shipping}`}</span>
-					</p>
-				</>
-			);
-		default:
-			return "";
-	}
-};
 
 const ModalSalesByDay = ({ show, onHideModal, infoDay }) => {
 	const [loadingTable, setLoadingTable] = useState(true);
@@ -80,6 +41,11 @@ const ModalSalesByDay = ({ show, onHideModal, infoDay }) => {
 			bids: card.item.bids,
 			offerPrice: card.item.offerPrice,
 			pic: card.item._data.pic,
+			priceSale: GetPriceSale({
+				soldType: card.item.soldType,
+				price: card.item.price,
+				offerPrice: card.item.offerPrice,
+			}),
 			price: {
 				id: card.item.id,
 				price: card.item.price,
@@ -192,7 +158,7 @@ const ModalSalesByDay = ({ show, onHideModal, infoDay }) => {
 		},
 		{
 			Header: "Price",
-			accessor: "price",
+			accessor: "priceSale",
 			width: 200,
 			Cell: (props) => {
 				const { original } = props;
@@ -206,13 +172,13 @@ const ModalSalesByDay = ({ show, onHideModal, infoDay }) => {
 							}
 						`}
 					>
-						{priceState(original.price)}
+						<PriceState data={original.price} />
 					</div>
 				);
 			},
 			sortMethod: (a, b) => {
-				a = a.price;
-				b = b.price;
+				a = a;
+				b = b;
 				return b > a ? 1 : -1;
 			},
 		},
@@ -283,7 +249,12 @@ const ModalSalesByDay = ({ show, onHideModal, infoDay }) => {
 					minRows={1}
 					data={dataTable}
 					pageSize={dataTable.length}
-					// TheadComponent={TheadComponent}
+					defaultSorted={[
+						{
+							id: "priceSale",
+							desc: false,
+						},
+					]}
 					className="r_table_ebay r_table_ebay_modal"
 					loading={loadingTable}
 				/>

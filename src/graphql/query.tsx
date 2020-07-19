@@ -249,3 +249,61 @@ export const SEARCH_DEFINED_LIST = gql`
 		}
 	}
 `;
+
+export const FETCH_LOW_DEFINED_ITEM = gql`
+	query fetchLowDefinedItem(
+		$list_id: String!
+		$limit: Int = 20
+		$offset: Int!
+	) {
+		defined_list_item(
+			where: { defined_list_id: { _eq: $list_id } }
+			order_by: { item: { price: asc } }
+			limit: $limit
+			offset: $offset
+		) {
+			defined_list_id
+			item {
+				bids
+				offerPrice
+				shipping
+				offerPrice
+				shipping
+				price
+				soldDate
+				soldType
+				_data
+				id
+			}
+		}
+	}
+`;
+
+export const FETCH_HIGH_DEFINED_ITEM = gql`
+	query fetchHighDefinedItem(
+		$list_id: String!
+		$limit: Int = 20
+		$offset: Int!
+	) {
+		defined_list_item(
+			where: { defined_list_id: { _eq: $list_id } }
+			order_by: { item: { price: desc } }
+			limit: $limit
+			offset: $offset
+		) {
+			defined_list_id
+			item {
+				bids
+				offerPrice
+				shipping
+				offerPrice
+				shipping
+				price
+				soldDate
+				soldType
+				_data
+				id
+			}
+		}
+	}
+`;

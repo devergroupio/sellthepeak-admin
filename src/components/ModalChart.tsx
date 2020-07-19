@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useApolloClient } from "@apollo/react-hooks";
 import moment from "moment";
-import { Modal, Spin } from "antd";
+import { Modal, Spin, Button } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Line } from "react-chartjs-2";
 import { FETCH_DAY_ANALYSIS_ITEMS } from "~@/graphql/query";
 import { css } from "@emotion/core";
 import ModalSalesByDay from "~@/components/ModalSalesByDay";
+import TableInfinite from "~@/components/interface/TableInfinite";
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -102,6 +103,9 @@ const ModalChart = ({ show, onHideModal, infoChart }) => {
 	const [dataChart, setDataChart] = useState([]);
 	const [showModalDay, setShowModalDay] = useState(false);
 	const [selectDay, setSelectDay] = useState("");
+	const [openModal, setOpenModal] = useState(false);
+	const [openModalTopSales, setOpenModalTopSales] = useState(false);
+	const [topSales, setTopSales] = useState("");
 
 	const getDataChart = () => {
 		gqlClient
@@ -127,6 +131,21 @@ const ModalChart = ({ show, onHideModal, infoChart }) => {
 
 	return (
 		<div className="">
+			<Modal
+				width="80vw"
+				// title={infoChart.keyword}
+				visible={openModal || openModalTopSales}
+				onCancel={() => {
+					setOpenModalTopSales(false);
+					setOpenModal(false);
+				}}
+				footer={null}
+			>
+				{openModal && <TableInfinite defineId={infoChart.id} />}
+				{openModalTopSales && (
+					<TableInfinite defineId={infoChart.id} topSales={topSales} />
+				)}
+			</Modal>
 			{showModalDay && (
 				<ModalSalesByDay
 					show={showModalDay}
@@ -142,35 +161,94 @@ const ModalChart = ({ show, onHideModal, infoChart }) => {
 				footer={null}
 			>
 				{dataChart.length ? (
-					<div style={{ height: "60vh" }}>
-						<Line
-							data={{
-								labels: getDates(initialDates.startDate, initialDates.endDate),
-								datasets: [
-									{
-										label: "Avg price",
-										fill: false,
-										data: serializeData(dataChart),
-										borderColor: "#d35400",
-										borderWidth: 1,
-									},
-								],
-							}}
-							options={options}
-							getElementAtEvent={(elems) => {
-								if (elems.length) {
-									const datasetIndex = elems[0]._datasetIndex;
-									const indx = elems[0]._index;
-									setSelectDay(
-										`${dataChart[indx].year}-${
-											dataChart[indx].month
-										}-${dataChart[indx].day}`
-									);
-									setShowModalDay(true);
-								}
-							}}
-						/>
-					</div>
+					<>
+						<div
+							css={css`
+								width: 100%;
+								margin-bottom: 20px;
+							`}
+						>
+							<Button
+								onClick={() => {
+									setOpenModal(true);
+								}}
+								css={css`
+									margin-top: 10px;
+									@media (min-width: 768px) {
+										margin-top: 0;
+									}
+								`}
+							>
+								Show Card Sales History
+							</Button>
+							<Button
+								onClick={() => {
+									setOpenModalTopSales(true);
+									setTopSales("highest");
+								}}
+								css={css`
+									margin-left: 10px;
+									margin-top: 10px;
+									@media (min-width: 768px) {
+										margin-top: 0;
+									}
+									@media (min-width: 992px) {
+										margin-left: 15px;
+									}
+								`}
+							>
+								Highest
+							</Button>
+							<Button
+								onClick={() => {
+									setOpenModalTopSales(true);
+									setTopSales("lowest");
+								}}
+								css={css`
+									margin-left: 10px;
+									margin-top: 10px;
+									@media (min-width: 768px) {
+										margin-top: 0;
+									}
+									@media (min-width: 992px) {
+										margin-left: 15px;
+									}
+								`}
+							>
+								Lowest
+							</Button>
+						</div>
+						<div style={{ height: "60vh" }}>
+							<Line
+								data={{
+									labels: getDates(
+										initialDates.startDate,
+										initialDates.endDate
+									),
+									datasets: [
+										{
+											label: "Avg price",
+											fill: false,
+											data: serializeData(dataChart),
+											borderColor: "#d35400",
+											borderWidth: 1,
+										},
+									],
+								}}
+								options={options}
+								getElementAtEvent={(elems) => {
+									if (elems.length) {
+										const datasetIndex = elems[0]._datasetIndex;
+										const indx = elems[0]._index;
+										setSelectDay(
+											`${dataChart[indx].year}-${dataChart[indx].month}-${dataChart[indx].day}`
+										);
+										setShowModalDay(true);
+									}
+								}}
+							/>
+						</div>
+					</>
 				) : (
 					<div
 						css={css`
