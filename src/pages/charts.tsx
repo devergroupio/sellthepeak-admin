@@ -463,14 +463,20 @@ export default () => {
 					<Form.Item name="words" label="Words">
 						<TextArea autoSize />
 					</Form.Item>
-					<Form.Item name="xchars" label="Xchars">
-						<Input />
+					<Form.Item
+						name="xchars"
+						label="Xchars"
+						css={css`
+							display: none;
+						`}
+					>
+						<Input disabled />
 					</Form.Item>
 					<Form.Item name="psa_variant" label="PSA variant">
 						<Input />
 					</Form.Item>
 					<Form.Item name="psa_line" label="PSA line">
-						<Input type="number" />
+						<Input type="text" />
 					</Form.Item>
 					<Form.Item name="psa_link" label="PSA link">
 						<Input />
