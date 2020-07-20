@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import ReactTable from "react-table-v6";
-import { Button } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Button, Modal, Spin } from "antd";
 import { useApolloClient } from "@apollo/react-hooks";
 import PriceState from "~@/components/PriceState";
 import { format } from "date-fns";
@@ -15,11 +16,13 @@ import { GetPriceSale } from "~@/utils";
 import "react-table-v6/react-table.css";
 import "~@/components/interface/style.scss";
 
+const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const LIMIT = 20;
 
 const TableInfinite = (props) => {
 	const { topSales } = props;
 	const gqlClient = useApolloClient();
+	const [loading, setLoading] = useState(true);
 	const [dataTable, setDataTable] = useState([]);
 	const [isHasMore, setIsHasMore] = useState(true);
 	const [loadingTable, setLoadingTable] = useState(false);
@@ -76,6 +79,7 @@ const TableInfinite = (props) => {
 		setLoadingTable(false);
 		// const newData = dataTable.concat(convertData);
 		setDataTable([...dataTable, ...convertData]);
+		setLoading(false);
 	}, [dataTable, isHasMore, loadingTable]);
 
 	const onDeleteRequestion = () => {
@@ -157,8 +161,8 @@ const TableInfinite = (props) => {
 							font-size: 14px;
 							text-align: center;
 							p {
-                margin: 0;
-                color: #fff;
+								margin: 0;
+								color: #fff;
 							}
 						`}
 					>
@@ -192,8 +196,8 @@ const TableInfinite = (props) => {
 						css={css`
 							p {
 								margin: 0;
-                padding: 0;
-                color: #fff;
+								padding: 0;
+								color: #fff;
 							}
 						`}
 					>
@@ -232,100 +236,63 @@ const TableInfinite = (props) => {
 
 	return (
 		<>
-			{visibleModal ? (
+			<Modal
+				visible={visibleModal}
+				title="Are you sure you want to report this item?"
+				onCancel={() => setVisibleModal(false)}
+				onOk={onDeleteRequestion}
+			></Modal>
+			{loading ? (
 				<div
 					css={css`
-						position: fixed;
-						z-index: 100;
-						background-color: rgba(0, 0, 0, 0.5);
-						min-width: 100vw;
-						min-height: 100vh;
-						top: 0;
-						left: 0;
 						text-align: center;
 					`}
-					onClick={() => setVisibleModal(false)}
 				>
-					<div
-						css={css`
-							max-width: 400px;
-							margin: 50px auto;
-							pointer-events: auto;
-							background-color: #fff;
-							background-clip: padding-box;
-							border: 1px solid rgba(0, 0, 0, 0.2);
-							border-radius: 0.3rem;
-							outline: 0;
-							padding: 20px;
-						`}
-					>
-						<p
-							css={css`
-								font-size: 18px;
-							`}
-						>
-							Are you sure you want to report this item?
-						</p>
-						<div
-							css={css`
-								text-align: right;
-								padding: 0;
-							`}
-						>
-							<Button
-								onClick={() => setVisibleModal(false)}
-								css={css`
-									margin-right: 5px;
-								`}
-							>
-								Cancel
-							</Button>
-							<Button onClick={onDeleteRequestion}>Report</Button>
-						</div>
-					</div>
+					<Spin indicator={antIcon} />
 				</div>
 			) : (
-				""
-			)}
-			<div
-				css={css`
-					.rt-td {
-						white-space: normal !important;
-						text-align: center;
-					}
-					.rt-th {
-						background-color: #d35400;
-					}
-				`}
-			>
-				<ReactTable
-					style={{
-						height: "70vh",
-					}}
-					columns={columns}
-					showPageSizeOptions={false}
-					showPagination={false}
-					minRows={1}
-					pageSize={dataTable.length}
-					data={dataTable}
-					resolveData={(data) => data.map((row) => row)}
-					defaultSorted={[
-						{
-							id: "priceSale",
-							desc: topSales === "lowest",
-						},
-					]}
-					className="r_table_ebay r_table_ebay_modal"
-					loading={loadingTable}
-				/>
-			</div>
-			{isHasMore && !topSales && (
-				<Button
-					style={{ margin: "10px 0", float: "right" }}
-					onClick={fetchMoreItem}
-				>
-					Load More
-				</Button>
+				<>
+					<div
+						css={css`
+							.rt-td {
+								white-space: normal !important;
+								text-align: center;
+							}
+							.rt-th {
+								background-color: #d35400;
+							}
+						`}
+					>
+						<ReactTable
+							style={{
+								height: "70vh",
+							}}
+							columns={columns}
+							showPageSizeOptions={false}
+							showPagination={false}
+							minRows={1}
+							pageSize={dataTable.length}
+							data={dataTable}
+							resolveData={(data) => data.map((row) => row)}
+							defaultSorted={[
+								{
+									id: "priceSale",
+									desc: topSales === "lowest",
+								},
+							]}
+							className="r_table_ebay r_table_ebay_modal"
+							loading={loadingTable}
+						/>
+					</div>
+					{isHasMore && !topSales && (
+						<Button
+							style={{ margin: "10px 0", float: "right" }}
+							onClick={fetchMoreItem}
+						>
+							Load More
+						</Button>
+					)}
+				</>
 			)}
 		</>
 	);

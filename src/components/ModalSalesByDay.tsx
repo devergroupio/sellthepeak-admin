@@ -1,18 +1,23 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { LoadingOutlined } from "@ant-design/icons";
 import { useApolloClient } from "@apollo/react-hooks";
 import { FETCH_SALES_CARD_BY_DAY } from "~@/graphql/query";
 import ReactTable from "react-table-v6";
-import { Button, Modal, Table } from "antd";
+import { Button, Modal, Spin } from "antd";
 import { format } from "date-fns";
 import { INSERT_DELETE_REQUESTION } from "~@/graphql/mutation";
 import PriceState from "~@/components/PriceState";
 import { GetPriceSale } from "~@/utils/";
 import { css } from "@emotion/core";
+
+const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
 import "react-table-v6/react-table.css";
 import "~@/components/interface/style.scss";
 
 const ModalSalesByDay = ({ show, onHideModal, infoDay }) => {
 	const [loadingTable, setLoadingTable] = useState(true);
+	const [loading, setLoading] = useState(true);
 	const [dataTable, setDataTable] = useState([]);
 	const [visibleModalReport, setVisibleModalReport] = useState(false);
 	const [selectDeleteItemId, setSelectDeleteItemId] = useState({});
@@ -64,6 +69,7 @@ const ModalSalesByDay = ({ show, onHideModal, infoDay }) => {
 
 		setLoadingTable(false);
 		setDataTable([...dataTable, ...convertData]);
+		setLoading(false);
 	}, [dataTable, isHasMore, loadingTable]);
 
 	useEffect(() => {
@@ -239,37 +245,49 @@ const ModalSalesByDay = ({ show, onHideModal, infoDay }) => {
 				onCancel={onHideModal}
 				footer={null}
 			>
-				<ReactTable
-					style={{
-						height: "70vh",
-					}}
-					columns={columns}
-					showPagination={false}
-					showPageSizeOptions={false}
-					minRows={1}
-					data={dataTable}
-					pageSize={dataTable.length}
-					defaultSorted={[
-						{
-							id: "priceSale",
-							desc: false,
-						},
-					]}
-					className="r_table_ebay r_table_ebay_modal"
-					loading={loadingTable}
-				/>
-				{!loadingTable
-					? isHasMore && (
-							<Button
-								css={css`
-									text-align: right;
-								`}
-								onClick={getMoreSalesCardByDay}
-							>
-								Load More
-							</Button>
-					  )
-					: ""}
+				{loading ? (
+					<div
+						css={css`
+							text-align: center;
+						`}
+					>
+						<Spin indicator={antIcon} />
+					</div>
+				) : (
+					<>
+						<ReactTable
+							style={{
+								height: "70vh",
+							}}
+							columns={columns}
+							showPagination={false}
+							showPageSizeOptions={false}
+							minRows={1}
+							data={dataTable}
+							pageSize={dataTable.length}
+							defaultSorted={[
+								{
+									id: "priceSale",
+									desc: false,
+								},
+							]}
+							className="r_table_ebay r_table_ebay_modal"
+							loading={loadingTable}
+						/>
+						{!loadingTable
+							? isHasMore && (
+									<Button
+										css={css`
+											text-align: right;
+										`}
+										onClick={getMoreSalesCardByDay}
+									>
+										Load More
+									</Button>
+							  )
+							: ""}
+					</>
+				)}
 			</Modal>
 		</>
 	);
