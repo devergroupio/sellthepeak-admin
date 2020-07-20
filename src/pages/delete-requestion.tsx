@@ -11,7 +11,12 @@ import {
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import { useApolloClient } from "@apollo/react-hooks";
 import { FETCH_DELETE_REQUESTION } from "~@/graphql/query";
-import { DELETE_ITEM, DELETE_REQUESTION, UPDATE_DEFINED_LIST } from "~@/graphql/mutation";
+import {
+	DELETE_ITEM,
+	DELETE_REQUESTION,
+	UPDATE_DEFINED_LIST,
+	UPDATE_DELETE_ITEM,
+} from "~@/graphql/mutation";
 import InfiniteScroll from "react-infinite-scroller";
 import { css } from "@emotion/core";
 import moment from "moment";
@@ -30,6 +35,7 @@ export default () => {
 	const [dataTable, setDataTable] = useState([]);
 	const [modalDelete, setModalDelete] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [loadingDelete, setLoadingDelete] = useState(false);
 	const [isHasMore, setIsHasMore] = useState(true);
 	const [form] = Form.useForm();
 	const [formDelete] = Form.useForm();
@@ -198,58 +204,70 @@ export default () => {
 	}, []);
 
 	const deleteItem = (values) => {
-		setLoading(true);
+		setLoadingDelete(true);
 		gqlClient
 			.mutate({
 				fetchPolicy: "no-cache",
 				mutation: DELETE_ITEM,
 				variables: {
-					id: values.id
+					id: values.id,
 				},
 			})
 			.then(() => {
 				gqlClient
 					.mutate({
-						mutation: UPDATE_DEFINED_LIST,
+						fetchPolicy: "no-cache",
+						mutation: UPDATE_DELETE_ITEM,
 						variables: {
-							idDefinedList: values.idCard,
-							data: {
-								exclusion: {
-									...values.exclusion,
-									words: values.words,
-								},
-							},
+							id: values.id,
 						},
 					})
 					.then(() => {
-						notification.success({
-							message: "Success",
-							description: "Delete card success",
-						});
-						setDataTable((prev) => prev.filter((item) => item.id !== values.id));
-						setLoading(false);
-					})
-					.catch((err) => {
-						console.log(err);
-						notification.error({
-							message: "Error",
-							description: "Delete card error",
-						});
+						gqlClient
+							.mutate({
+								mutation: UPDATE_DEFINED_LIST,
+								variables: {
+									idDefinedList: values.idCard,
+									data: {
+										exclusion: {
+											...values.exclusion,
+											words: values.words,
+										},
+									},
+								},
+							})
+							.then(() => {
+								notification.success({
+									message: "Success",
+									description: "Delete card success",
+								});
+								setDataTable((prev) =>
+									prev.filter((item) => item.id !== values.id)
+								);
+								setLoadingDelete(false);
+								setModalDelete(false);
+							})
+							.catch((err) => {
+								console.log(err);
+								setLoadingDelete(false);
+								notification.error({
+									message: "Error",
+									description: "Delete card error",
+								});
+							});
 					});
 			});
-		
 	};
 
 	return (
 		<AdminLayout>
 			<Form form={form} component={false}>
 				<Modal
+					// confirmLoading={loadingDelete}
 					title="Delete"
 					visible={modalDelete}
 					onCancel={() => setModalDelete(false)}
-					onOk={() => {
-						formDelete.submit();
-					}}
+					footer={null}
 				>
 					<Form
 						form={formDelete}
@@ -297,6 +315,25 @@ export default () => {
 							<TextArea autoSize />
 						</Form.Item>
 					</Form>
+					<div
+						css={css`
+							text-align: right;
+						`}
+					>
+						<Button onClick={() => setModalDelete(false)}>Cancel</Button>
+						<Button
+							css={css`
+								margin-left: 5px;
+							`}
+							loading={loadingDelete}
+							type="primary"
+							onClick={() => {
+								formDelete.submit();
+							}}
+						>
+							Ok
+						</Button>
+					</div>
 				</Modal>
 				<InfiniteScroll loadMore={getMoreDeleteRequestion} hasMore={isHasMore}>
 					<Table

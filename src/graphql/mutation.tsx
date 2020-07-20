@@ -35,10 +35,7 @@ export const UPDATE_DEFINED_LIST = gql`
 
 export const DELETE_ITEM = gql`
 	mutation deleteItem($id: bigint!) {
-		delete_item(where: { id: { _eq: $id } }) {
-			affected_rows
-		}
-		delete_defined_list_item(where: { item_id: { _eq: $id } }) {
+		delete_delete_requestion(where: { item_id: { _eq: $id } }) {
 			affected_rows
 		}
 	}
@@ -47,6 +44,16 @@ export const DELETE_ITEM = gql`
 export const DELETE_REQUESTION = gql`
 	mutation deleteItem($id: bigint!) {
 		delete_delete_requestion(where: { item_id: { _eq: $id } }) {
+			affected_rows
+		}
+		update_item(where: { id: { _eq: $id } }, _set: { isDelete: true }) {
+			affected_rows
+		}
+	}
+`;
+export const UPDATE_DELETE_ITEM = gql`
+	mutation updateItem($id: bigint!) {
+		update_item(where: { id: { _eq: $id } }, _set: { isDelete: true }) {
 			affected_rows
 		}
 	}
