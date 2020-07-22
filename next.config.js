@@ -1,6 +1,7 @@
 require("./dotenv.config");
 // const withPurgeCss = require("next-purgecss");
 const withSass = require("@zeit/next-sass");
+const withCss = require("@zeit/next-css");
 const customConfig = {
   publicRuntimeConfig: {
     HASURA_ENDPOINT: process.HASURA_ENDPOINT,
@@ -29,4 +30,4 @@ const defaultConfig = {
     return config;
   },
 };
-module.exports = withSass(defaultConfig);
+module.exports = withSass(withCss(defaultConfig));

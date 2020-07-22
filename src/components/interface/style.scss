@@ -326,7 +326,7 @@
     }
     border-bottom: none !important;
   }
-  margin-top: 100px;
+
   display: flex;
   flex-direction: column;
   &.spinner-table {
@@ -400,7 +400,7 @@ label {
 
 .ReactTable .rt-thead {
   position: sticky;
-  top: 1;
+  top: 0;
   z-index: 1;
 }
 .ReactTable .rt-tbody {
@@ -438,59 +438,6 @@ label {
   content: ".";
 }
 
-.ReactTable .rt-th.-sort-asc .rt-resizer:before {
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTAgMTVWNmw0IDQgMS0xLTYtNi02IDYgMSAxIDQtNHY5eiIgZmlsbD0iIzMzMyIvPjwvc3ZnPg==);
-}
-
-.ReactTable .rt-th.-sort-desc .rt-resizer:before {
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNOCAzdjkuMTNMNCA4IDMgOWw2IDYgNi02LTEtMS00IDQuMTNWM3oiIGZpbGw9IiMzMzMiLz48L3N2Zz4=);
-}
-
-.commons_exclude_list {
-  .form-check-input {
-    bottom: 3px;
-  }
-  display: flex;
-  flex-wrap: wrap;
-  @media (max-width: 470px) {
-    margin-top: 15px;
-  }
-  .exclude_type_wrapper {
-    position: relative;
-    margin-bottom: 15px;
-    padding: 0 15px;
-    @media (max-width: 768px) {
-      padding: 0 5px;
-    }
-    label {
-      font-size: 12px;
-    }
-
-    .exclude_title {
-      text-align: left;
-      font-size: 15px !important;
-      @media (max-width: 768px) {
-        text-align: center;
-      }
-    }
-    .exclude_word_wrapper {
-      display: flex;
-      width: fit-content;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      max-height: 120px;
-      // @media (max-width: 470px) {
-      //   justify-content: space-around;
-      // }
-      .column_exclude {
-        display: flex;
-        flex-direction: column;
-        padding-right: 10px;
-      }
-    }
-  }
-}
-
 .btn_search_submit {
   @media (max-width: 768px) {
     margin-top: 15px;
@@ -501,45 +448,6 @@ label {
   @media (max-width: 556px) {
     max-width: 100%;
     overflow: auto;
-  }
-}
-
-table {
-  margin-top: 20px;
-  tr {
-    &.blue {
-      th {
-        color: blue;
-      }
-    }
-  }
-  th {
-    text-align: center;
-    font-weight: bold;
-    font-size: 14px;
-    color: #d35400;
-  }
-
-  tr {
-    td {
-      background-color: #f2f4f8;
-      border-right: 1px solid #e4e4e4;
-      padding: 0 7px;
-
-      &:first-child {
-        background-clip: content-box;
-        border-right: none;
-        span {
-          margin: 0 5px;
-        }
-      }
-      span {
-        text-align: right;
-        display: block;
-        line-height: 1.3em;
-        font-size: 14px;
-      }
-    }
   }
 }
 

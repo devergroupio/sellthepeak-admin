@@ -1,49 +1,41 @@
-import React, { useState, useCallback, useEffect } from "react";
-import ReactTable from "react-table-v6";
+import React, { useCallback, useEffect, useState } from "react";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Button, Modal, Spin } from "antd";
 import { useApolloClient } from "@apollo/react-hooks";
-import PriceState from "~@/components/PriceState";
+import { FETCH_SALES_CARD_BY_DAY } from "~@/graphql/query";
+import ReactTable from "react-table-v6";
+import { Button, Modal, Spin } from "antd";
 import { format } from "date-fns";
-import { css } from "@emotion/core";
-import {
-	FETCH_MORE_DEFINED_ITEM,
-	FETCH_HIGH_DEFINED_ITEM,
-	FETCH_LOW_DEFINED_ITEM,
-} from "~@/graphql/query";
 import { INSERT_DELETE_REQUESTION } from "~@/graphql/mutation";
-import { GetPriceSale } from "~@/utils";
+import PriceState from "~@/components/PriceState";
+import { GetPriceSale } from "~@/utils/";
+import { css } from "@emotion/core";
+
+const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
 import "react-table-v6/react-table.css";
 import "~@/components/interface/style.scss";
 
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-const LIMIT = 20;
-
-const TableInfinite = (props) => {
-	const { topSales } = props;
-	const gqlClient = useApolloClient();
+const ModalSalesByDay = ({ show, onHideModal, infoDay }) => {
+	const [loadingTable, setLoadingTable] = useState(true);
 	const [loading, setLoading] = useState(true);
 	const [dataTable, setDataTable] = useState([]);
-	const [isHasMore, setIsHasMore] = useState(true);
-	const [loadingTable, setLoadingTable] = useState(false);
+	const [visibleModalReport, setVisibleModalReport] = useState(false);
 	const [selectDeleteItemId, setSelectDeleteItemId] = useState({});
-	const [visibleModal, setVisibleModal] = useState(false);
+	const [isHasMore, setIsHasMore] = useState(true);
 
-	useEffect(() => {
-		fetchMoreItem();
-	}, []);
+	const gqlClient = useApolloClient();
 
-	const fetchMoreItem = useCallback(async () => {
+	const getMoreSalesCardByDay = useCallback(async () => {
 		setLoadingTable(true);
+		const fromDate = `${infoDay.date}T00:00:00+00:00`;
+		const toDate = `${infoDay.date}T23:59:00+00:00`;
 		const { data, errors } = await gqlClient.query({
-			query: topSales
-				? topSales === "highest"
-					? FETCH_HIGH_DEFINED_ITEM
-					: FETCH_LOW_DEFINED_ITEM
-				: FETCH_MORE_DEFINED_ITEM,
+			query: FETCH_SALES_CARD_BY_DAY,
 			variables: {
-				limit: LIMIT,
-				list_id: props.defineId,
+				definedId: infoDay.id,
+				fromDate,
+				toDate,
+				limit: 20,
 				offset: dataTable.length,
 			},
 		});
@@ -72,32 +64,17 @@ const TableInfinite = (props) => {
 			soldType: card.item.soldType,
 			title: card.item._data.title,
 		}));
-
-		if (convertData.length === LIMIT) setIsHasMore(true);
+		if (convertData.length === 20) setIsHasMore(true);
 		else setIsHasMore(false);
 
 		setLoadingTable(false);
-		// const newData = dataTable.concat(convertData);
 		setDataTable([...dataTable, ...convertData]);
 		setLoading(false);
 	}, [dataTable, isHasMore, loadingTable]);
 
-	const onDeleteRequestion = () => {
-		gqlClient
-			.mutate({
-				mutation: INSERT_DELETE_REQUESTION,
-				variables: {
-					item: {
-						item_id: selectDeleteItemId,
-					},
-				},
-			})
-			.then(() => {
-				setDataTable((prev) =>
-					prev.filter((item) => item.id !== selectDeleteItemId)
-				);
-			});
-	};
+	useEffect(() => {
+		getMoreSalesCardByDay();
+	}, []);
 
 	const columns = [
 		{
@@ -161,8 +138,8 @@ const TableInfinite = (props) => {
 							font-size: 14px;
 							text-align: center;
 							p {
-								margin: 0;
 								color: #fff;
+								margin: 0;
 							}
 						`}
 					>
@@ -195,9 +172,9 @@ const TableInfinite = (props) => {
 					<div
 						css={css`
 							p {
+								color: #fff;
 								margin: 0;
 								padding: 0;
-								color: #fff;
 							}
 						`}
 					>
@@ -206,6 +183,8 @@ const TableInfinite = (props) => {
 				);
 			},
 			sortMethod: (a, b) => {
+				a = a;
+				b = b;
 				return b > a ? 1 : -1;
 			},
 		},
@@ -221,7 +200,7 @@ const TableInfinite = (props) => {
 						className="btn-delete"
 						onClick={() => {
 							setSelectDeleteItemId(original.id);
-							setVisibleModal(true);
+							setVisibleModalReport(true);
 						}}
 					>
 						Report!
@@ -231,70 +210,87 @@ const TableInfinite = (props) => {
 			sortable: true,
 		},
 	];
-
 	// const TheadComponent = () => null;
 
+	const onDeleteRequestion = () => {
+		gqlClient
+			.mutate({
+				mutation: INSERT_DELETE_REQUESTION,
+				variables: {
+					item: {
+						item_id: selectDeleteItemId,
+					},
+				},
+			})
+			.then(() => {
+				setDataTable((prev) =>
+					prev.filter((item) => item.id !== selectDeleteItemId)
+				);
+				setVisibleModalReport(false);
+			});
+	};
 	return (
 		<>
 			<Modal
-				visible={visibleModal}
+				visible={visibleModalReport}
 				title="Are you sure you want to report this item?"
-				onCancel={() => setVisibleModal(false)}
+				onCancel={() => setVisibleModalReport(false)}
 				onOk={onDeleteRequestion}
 			></Modal>
-			{loading ? (
-				<div
-					css={css`
-						text-align: center;
-					`}
-				>
-					<Spin indicator={antIcon} />
-				</div>
-			) : (
-				<>
+			<Modal
+				width="80vw"
+				css={css`height: "85vh`}
+				title=""
+				visible={show}
+				onCancel={onHideModal}
+				footer={null}
+			>
+				{loading ? (
 					<div
 						css={css`
-							.rt-td {
-								white-space: normal !important;
-								text-align: center;
-							}
-							.rt-th {
-								background-color: #d35400;
-							}
+							text-align: center;
 						`}
 					>
+						<Spin indicator={antIcon} />
+					</div>
+				) : (
+					<>
 						<ReactTable
 							style={{
 								height: "70vh",
 							}}
 							columns={columns}
-							showPageSizeOptions={false}
 							showPagination={false}
+							showPageSizeOptions={false}
 							minRows={1}
-							pageSize={dataTable.length}
 							data={dataTable}
-							resolveData={(data) => data.map((row) => row)}
+							pageSize={dataTable.length}
 							defaultSorted={[
 								{
 									id: "priceSale",
-									desc: topSales === "lowest",
+									desc: false,
 								},
 							]}
 							className="r_table_ebay r_table_ebay_modal"
 							loading={loadingTable}
 						/>
-					</div>
-					{isHasMore && !topSales && (
-						<Button
-							style={{ margin: "10px 0", float: "right" }}
-							onClick={fetchMoreItem}
-						>
-							Load More
-						</Button>
-					)}
-				</>
-			)}
+						{!loadingTable
+							? isHasMore && (
+									<Button
+										css={css`
+											text-align: right;
+										`}
+										onClick={getMoreSalesCardByDay}
+									>
+										Load More
+									</Button>
+							  )
+							: ""}
+					</>
+				)}
+			</Modal>
 		</>
 	);
 };
-export default TableInfinite;
+
+export default React.memo(ModalSalesByDay);

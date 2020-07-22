@@ -121,7 +121,7 @@ const ModalAddChart = ({ show, onHideModal, addnewChart }) => {
           <Input placeholder="" />
         </Form.Item>
         <Form.Item name="psa_line" label="PSA line">
-          <Input type="number" placeholder="" />
+          <Input type="text" placeholder="" />
         </Form.Item>
         <Form.Item name="psa_variant" label="PSA variant">
           <Input placeholder="" />
