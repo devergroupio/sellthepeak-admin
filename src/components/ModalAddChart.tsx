@@ -36,6 +36,7 @@ const ModalAddChart = ({ show, onHideModal, addnewChart }) => {
             exclusion: { words: values.words, xchars: values.xchars },
             psa_line: values.psa_line,
             psa_link: values.psa_link,
+            psa_variant: values.psa_variant,
           },
           on_confict: {
             constraint: "defined_list_pkey",
