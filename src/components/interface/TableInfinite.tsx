@@ -93,9 +93,14 @@ const TableInfinite = (props) => {
 				},
 			})
 			.then(() => {
+				setVisibleModal(false);
 				setDataTable((prev) =>
 					prev.filter((item) => item.id !== selectDeleteItemId)
 				);
+			})
+			.catch((err) => {
+				console.log(err);
+				setVisibleModal(false);
 			});
 	};
 

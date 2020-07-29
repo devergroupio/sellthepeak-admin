@@ -46,7 +46,7 @@ export const DELETE_REQUESTION = gql`
 		delete_delete_requestion(where: { item_id: { _eq: $id } }) {
 			affected_rows
 		}
-		update_item(where: { id: { _eq: $id } }, _set: { isDelete: true }) {
+		update_item(where: { id: { _eq: $id } }, _set: { isDelete: false }) {
 			affected_rows
 		}
 	}
