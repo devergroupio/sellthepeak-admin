@@ -223,9 +223,13 @@ const ModalSalesByDay = ({ show, onHideModal, infoDay }) => {
 				},
 			})
 			.then(() => {
+				setVisibleModalReport(false);
 				setDataTable((prev) =>
 					prev.filter((item) => item.id !== selectDeleteItemId)
 				);
+			})
+			.catch((err) => {
+				console.log(err);
 				setVisibleModalReport(false);
 			});
 	};
