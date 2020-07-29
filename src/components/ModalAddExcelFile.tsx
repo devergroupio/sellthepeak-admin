@@ -94,7 +94,7 @@ const ModalAddExcelFile = ({ show, onHideModal }) => {
           id: `${item[0].toLowerCase().replace(/[^A-Z0-9]+/gi, "")}`,
           keyword: item[0],
           exclusion: { words: item[1], xchars: item[5] ? item[5] : "?" },
-          psa_line: item[3] ? item[3] : "",
+          psa_line: item[3] ? item[3].toString() : "",
           psa_link: item[2] ? item[2] : "",
           psa_variant: item[4] ? item[4] : null,
         }))
