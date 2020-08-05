@@ -99,7 +99,6 @@ const TableInfinite = (props) => {
 				);
 			})
 			.catch((err) => {
-				console.log(err);
 				setVisibleModal(false);
 			});
 	};

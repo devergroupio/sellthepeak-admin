@@ -70,6 +70,7 @@ export default () => {
     setLoadingFetchExclusion(true);
     gqlClient
       .query({
+        fetchPolicy: "no-cache",
         query: FETCH_EXCLUSION_BY_ID,
         variables: {
           id: record.idCard,
@@ -266,7 +267,6 @@ export default () => {
                 setModalDelete(false);
               })
               .catch((err) => {
-                console.log(err);
                 setLoadingDelete(false);
                 notification.error({
                   message: "Error",

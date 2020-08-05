@@ -229,7 +229,6 @@ const ModalSalesByDay = ({ show, onHideModal, infoDay }) => {
         );
       })
       .catch((err) => {
-        console.log(err);
         setVisibleModalReport(false);
       });
   };
