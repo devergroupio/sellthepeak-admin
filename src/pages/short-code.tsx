@@ -103,7 +103,6 @@ const ShortCode = () => {
         ids: IDS,
         // multi: values.type ? (values.type === "switch" ? false : true) : false,
       };
-      console.log(context);
       const shortCode = `
       <div
       class="sellthepeak_app"
