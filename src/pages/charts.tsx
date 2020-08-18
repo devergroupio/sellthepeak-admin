@@ -42,6 +42,7 @@ interface IInfoChart {
   syncedAt?: any;
   psa_variant?: any;
   created_at?: any;
+  onCell?: any;
 }
 
 export default () => {
@@ -260,7 +261,16 @@ export default () => {
     {
       title: "words",
       dataIndex: "words",
-      width: "300px",
+      width: 300,
+      // @ts-ignore
+      onCell: () => {
+        return {
+          style: {
+            whiteSpace: "wrap",
+            maxWidth: 300,
+          },
+        };
+      },
     },
 
     {
