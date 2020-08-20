@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Layout, Menu, Button } from "antd";
+import { css } from "@emotion/core";
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -106,6 +107,12 @@ export default (props) => {
               padding: 24,
               minHeight: 280,
             }}
+            css={css`
+              @media (max-width: 1024px) {
+                padding: 24px 10px !important;
+                margin: 24px 0 !important;
+              }
+            `}
           >
             {props.children}
           </Content>

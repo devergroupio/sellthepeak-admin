@@ -332,7 +332,9 @@ export default () => {
                 title="Sure to Force Update?"
                 onConfirm={() => forceUpdate(record)}
               >
-                <Button style={{ color: "#ffec3d" }}>Force Update</Button>
+                <Button style={{ color: "#ffec3d", width: "100%" }}>
+                  Force Update
+                </Button>
               </Popconfirm>
             </p>
           </div>
@@ -505,6 +507,7 @@ export default () => {
       </Modal>
       <Form form={form} component={false}>
         <Table
+          scroll={{ x: 1500 }}
           rowSelection={{
             type: "checkbox",
             ...rowSelection,
