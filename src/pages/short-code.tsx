@@ -10,6 +10,8 @@ import {
   // FETCH_NEEDED_CREATE_SHORTCODE,
   SEARCH_DEFINED_LIST,
 } from "~@/graphql/query";
+import { de } from "date-fns/locale";
+import { FormText } from "react-bootstrap";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -42,15 +44,51 @@ const ShortCode = () => {
     if (!data.defined_list.length) {
       setFetching(false);
     }
-    setOptionsChartDefine(data.defined_list);
+    const { defined_list } = data;
+    const optionAll = {
+      keyword: "Select all users",
+      id: "select_all",
+    };
+    if (defined_list.length > 1) {
+      setOptionsChartDefine([optionAll, ...defined_list]);
+    } else {
+      setOptionsChartDefine(defined_list);
+    }
     setLoading(false);
   };
 
-  const handleChange = (value) => {
-    setKeySearch(value);
+  const handleChange = (
+    value: {
+      key: string;
+      label: string;
+      value: string;
+    }[]
+  ) => {
+    if (value[0]) {
+      if (optionsChartDefine.length > 1) {
+        const optionSelectedAll = value.filter(
+          (option) => option.value === "select_all"
+        );
+        if (optionSelectedAll.length === 0) {
+          setKeySearch(value);
+        } else {
+          const convertData = optionsChartDefine.slice(1).map((chart) => ({
+            key: chart.id,
+            value: chart.id,
+            label: chart.keyword,
+          }));
+          form.setFieldsValue({
+            nameChart: convertData,
+          });
+          setKeySearch(convertData);
+        }
+      } else {
+        setKeySearch(value);
+      }
+    }
+
     setFetching(false);
   };
-
   // const getNeededCreateShortCode = async () => {
   // 	const { data, errors } = await gqlClient.query({
   // 		query: FETCH_NEEDED_CREATE_SHORTCODE,
@@ -125,6 +163,15 @@ const ShortCode = () => {
       duration: 1,
     });
   };
+  const resetResult = () => {
+    setKeySearch([]);
+    if (selectedApp === "chart") {
+      form.setFieldsValue({
+        nameChart: [],
+      });
+    }
+  };
+
   return (
     <AdminLayout>
       {loading ? (
@@ -171,28 +218,7 @@ const ShortCode = () => {
                 ))}
               </Select>
             </Form.Item>
-            {/* {selectedApp === "chart" && (
-							<Form.Item
-								label="Type"
-								name="type"
-								css={css`
-									margin-right: 15px;
-								`}
-							>
-								<Select
-									defaultValue="switch"
-									css={css`
-										width: 200px !important;
-									`}
-								>
-									{optionsChart.map((opt) => (
-										<Option key={opt.value} value={opt.value}>
-											{opt.label}
-										</Option>
-									))}
-								</Select>
-							</Form.Item>
-						)} */}
+
             {selectedApp === "chart" && (
               <Form.Item
                 label="Name Chart"
@@ -246,10 +272,21 @@ const ShortCode = () => {
             <div
               css={css`
                 display: flex;
-                justify-content: space-between;
                 width: 100%;
               `}
             >
+              <Button
+                css={css`
+                  background: #fff;
+                  color: #000;
+                  margin-right: 15px;
+                  font-weight: 500;
+                `}
+                onClick={resetResult}
+                htmlType="reset"
+              >
+                Reset
+              </Button>
               <Button disabled={disableCreate} type="primary" htmlType="submit">
                 Create Short code
               </Button>
