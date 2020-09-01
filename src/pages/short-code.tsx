@@ -194,6 +194,9 @@ const ShortCode = () => {
               flex-wrap: wrap;
               padding-right: 20px;
               width: 50%;
+              @media (max-width: 768px) {
+                width: 100%;
+              }
             `}
             onFinish={createShortCode}
           >
@@ -231,6 +234,30 @@ const ShortCode = () => {
                 ]}
               >
                 <Select
+                  css={css`
+                    max-height: 600px;
+                    overflow: scroll;
+                    overflow-x: hidden;
+
+                    ::-webkit-scrollbar {
+                      width: 5px;
+                    }
+
+                    /* Track */
+                    ::-webkit-scrollbar-track {
+                      background: #000;
+                    }
+
+                    /* Handle */
+                    ::-webkit-scrollbar-thumb {
+                      background: #888;
+                    }
+
+                    /* Handle on hover */
+                    ::-webkit-scrollbar-thumb:hover {
+                      background: #555;
+                    }
+                  `}
                   mode="multiple"
                   labelInValue
                   value={keySearch}
