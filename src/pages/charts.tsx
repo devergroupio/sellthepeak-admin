@@ -7,7 +7,6 @@ import {
   Popconfirm,
   Table,
   Modal,
-  Space,
 } from "antd";
 import { ColumnProps } from "antd/es/table";
 import React, { useCallback, useState, useContext, useEffect } from "react";
@@ -26,6 +25,7 @@ import AppContext from "~@/components/AppProvider";
 import Redirect from "../components/Redirect";
 import ModalAddExcelFile from "~@/components/ModalAddExcelFile";
 import ModalChart from "~@/components/ModalChart";
+import stringSimilarity from "string-similarity";
 
 const LIMIT = 30;
 const { TextArea } = Input;
@@ -66,15 +66,14 @@ export default () => {
   const [formSearch] = Form.useForm();
   const [formEdit] = Form.useForm();
 
-  const getMoreDefinedList = useCallback(async () => {
+  const getMoreDefinedList = async (keywordSearch) => {
     setLoadingTable(true);
     const { data, errors } = await gqlClient.query({
       query: FETCH_DEFINED_LIST,
       fetchPolicy: "no-cache",
       variables: {
-        limit: LIMIT,
-        offset: dataTable.length,
-        search: searchKeyword ? `%${searchKeyword.trim()}%` : null,
+        limit: 1000000,
+        offset: 0,
       },
     });
     if (errors) return null;
@@ -85,16 +84,39 @@ export default () => {
         words: item.exclusion.words,
       };
     });
+    const similarCharts = serializeData.map((item) => {
+      const similarity = stringSimilarity.compareTwoStrings(
+        keywordSearch,
+        item.keyword
+      );
+      return {
+        ...item,
+        similarity,
+      };
+    });
+    const finalResults = _.orderBy(
+      similarCharts,
+      ["similarity"],
+      ["desc"]
+    ).filter((item) => {
+      const words = keywordSearch.toLowerCase().split(" ");
+      const isMissed = words.find(
+        (word) => !item.keyword.toLowerCase().includes(word)
+      );
+      return !isMissed;
+    });
 
-    if (serializeData.length === LIMIT) setIsHasMore(true);
+    if (finalResults.length === LIMIT) setIsHasMore(true);
     else setIsHasMore(false);
 
     setLoadingTable(false);
-    setDataTable([...dataTable, ...serializeData]);
-  }, [dataTable, searchKeyword]);
+    setDataTable([...finalResults]);
+  };
 
   useEffect(() => {
-    getMoreDefinedList();
+    if (searchKeyword.length === 0) {
+      getMoreDefinedList("");
+    }
   }, [searchKeyword]);
 
   const handleDelete = (id) => {
@@ -229,9 +251,14 @@ export default () => {
 
   //Search
   const searchKeywordData = (values) => {
-    setDataTable([]);
-    setSearchKeyword(values.keySearch);
-    setExportData([]);
+    if (values.keySearch) {
+      setDataTable([]);
+      setSearchKeyword(values.keySearch);
+      getMoreDefinedList(values.keySearch);
+      setExportData([]);
+    } else {
+      setSearchKeyword("");
+    }
   };
   const rowSelection = {
     selectedRows: exportData,
@@ -343,14 +370,14 @@ export default () => {
     },
   ];
 
-  const changePageTableData = (page, pageSize) => {
-    if (isHasMore) {
-      const isLastPage = dataTable.length / page === pageSize;
-      if (isLastPage) {
-        getMoreDefinedList();
-      }
-    }
-  };
+  // const changePageTableData = (page, pageSize) => {
+  //   if (isHasMore) {
+  //     const isLastPage = dataTable.length / page === pageSize;
+  //     if (isLastPage) {
+  //       getMoreDefinedList();
+  //     }
+  //   }
+  // };
   const openModalAddChart = () => setModalAdd(true);
   return (
     <AdminLayout>
@@ -409,7 +436,6 @@ export default () => {
             css={css`
               margin-left: 10px;
             `}
-            onClick={searchKeywordData}
           >
             Search
           </Button>
@@ -518,9 +544,9 @@ export default () => {
           dataSource={dataTable}
           loading={loadingTable}
           pagination={{
-            onChange: changePageTableData,
+            // onChange: changePageTableData,
             pageSize: 10,
-            showSizeChanger: false,
+            showSizeChanger: true,
           }}
         />
       </Form>

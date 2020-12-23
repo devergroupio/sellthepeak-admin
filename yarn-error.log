@@ -1,29 +1,29 @@
 Arguments: 
-  /home/deverpham/.nvm/versions/node/v10.18.1/bin/node /home/deverpham/.nvm/versions/node/v10.18.1/bin/yarn add @types/react-export-excel
+  /Users/mac/.nvm/versions/node/v10.17.0/bin/node /Users/mac/.nvm/versions/node/v10.17.0/bin/yarn add stringSimilarity
 
 PATH: 
-  /home/deverpham/.nvm/versions/node/v10.18.1/bin:/home/deverpham/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/deverpham/pycharm/bin:/home/deverpham/development/flutter/bin:/home/deverpham/development/android-studio/bin:/usr/lib/android-sdk/platform-tools/:/home/deverpham/go/bin:/home/deverpham/pycharm/bin:/home/deverpham/development/flutter/bin:/home/deverpham/development/android-studio/bin:/usr/lib/android-sdk/platform-tools/:/home/deverpham/go/bin
+  /Users/mac/.nvm/versions/node/v10.17.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/Library/Apple/usr/bin:/Applications/Postgres.app/Contents/Versions/latest/bin:/Users/mac/.nvm/versions/node/v10.17.0/bin:/Users/mac/development/flutter/bin:/Users/mac/library/Android/sdk/platform-tools:/Users/mac/development/flutter/bin:/Users/mac/library/Android/sdk/platform-tools
 
 Yarn version: 
-  1.22.4
+  1.22.0
 
 Node version: 
-  10.18.1
+  10.17.0
 
 Platform: 
-  linux x64
+  darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2freact-export-excel: Not found
-      at Request.params.callback [as _callback] (/home/deverpham/.nvm/versions/node/v10.18.1/lib/node_modules/yarn/lib/cli.js:66987:18)
-      at Request.self.callback (/home/deverpham/.nvm/versions/node/v10.18.1/lib/node_modules/yarn/lib/cli.js:140748:22)
+  Error: https://registry.yarnpkg.com/stringSimilarity: Not found
+      at Request.params.callback [as _callback] (/Users/mac/.nvm/versions/node/v10.17.0/lib/node_modules/yarn/lib/cli.js:66975:18)
+      at Request.self.callback (/Users/mac/.nvm/versions/node/v10.17.0/lib/node_modules/yarn/lib/cli.js:140727:22)
       at Request.emit (events.js:198:13)
-      at Request.<anonymous> (/home/deverpham/.nvm/versions/node/v10.18.1/lib/node_modules/yarn/lib/cli.js:141720:10)
+      at Request.<anonymous> (/Users/mac/.nvm/versions/node/v10.17.0/lib/node_modules/yarn/lib/cli.js:141699:10)
       at Request.emit (events.js:198:13)
-      at IncomingMessage.<anonymous> (/home/deverpham/.nvm/versions/node/v10.18.1/lib/node_modules/yarn/lib/cli.js:141642:12)
+      at IncomingMessage.<anonymous> (/Users/mac/.nvm/versions/node/v10.17.0/lib/node_modules/yarn/lib/cli.js:141621:12)
       at Object.onceWrapper (events.js:286:20)
       at IncomingMessage.emit (events.js:203:15)
-      at endReadableNT (_stream_readable.js:1145:12)
+      at endReadableNT (_stream_readable.js:1143:12)
       at process._tickCallback (internal/process/next_tick.js:63:19)
 
 npm manifest: 
@@ -39,6 +39,7 @@ npm manifest:
     "dependencies": {
       "@apollo/react-hooks": "^3.1.5",
       "@emotion/core": "^10.0.28",
+      "@zeit/next-css": "^1.0.1",
       "@zeit/next-less": "^1.0.1",
       "@zeit/next-sass": "^1.0.1",
       "antd": "^4.3.4",
@@ -1497,7 +1498,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
     integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
   
-  "@zeit/next-css@1.0.1":
+  "@zeit/next-css@1.0.1", "@zeit/next-css@^1.0.1":
     version "1.0.1"
     resolved "https://registry.yarnpkg.com/@zeit/next-css/-/next-css-1.0.1.tgz#4f784e841e7ca1b21b3468a902e2c1fa95a3e75c"
     integrity sha512-yfHPRy/ne/5SddVClsoy+fpU7e0Cs1gkWA67/wm2uIu+9rznF45yQLxHEt5dPGF3h6IiIh7ZtIgA8VV8YKq87A==

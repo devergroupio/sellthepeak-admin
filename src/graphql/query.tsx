@@ -2,11 +2,7 @@ import gql from "graphql-tag";
 
 export const FETCH_DEFINED_LIST = gql`
   query fetchDefinedList($limit: Int!, $offset: Int!, $search: String) {
-    defined_list(
-      limit: $limit
-      offset: $offset
-      where: { keyword: { _ilike: $search } }
-    ) {
+    defined_list(limit: $limit, offset: $offset) {
       id
       keyword
       syncedAt
