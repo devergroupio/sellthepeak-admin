@@ -120,7 +120,7 @@ const ExportExcel = (props: { data: IInfoChart[] }) => {
         style: { font: { sz: "10" } },
       },
       {
-        value: chart.psa_variant ? chart.psa_variant : "",
+        value: chart.psa_variant ? chart.psa_variant.toString() : "",
         style: { font: { sz: "10" } },
       },
       {
