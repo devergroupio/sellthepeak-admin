@@ -66,7 +66,24 @@ export default () => {
       });
   };
 
+  const deleteUnRelatedItem = (record) => {
+
+    gqlClient
+      .mutate({
+        fetchPolicy: "no-cache",
+        mutation: DELETE_ITEM,
+        variables: {
+          id: record.id,
+        },
+      })
+      .then(() => {
+        setDataTable((prev) => prev.filter((item) => item.id !== record.id));
+      });
+  };
   const openModalDelete = (record) => {
+    if (!record.idCard) {
+      return deleteUnRelatedItem(record);
+    }
     setModalDelete(true);
     setLoadingFetchExclusion(true);
     gqlClient
