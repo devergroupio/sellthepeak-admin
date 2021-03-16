@@ -26,6 +26,7 @@ import { css } from "@emotion/core";
 import moment from "moment";
 import AppContext from "../components/AppProvider";
 import Redirect from "../components/Redirect";
+import _ from "lodash";
 
 const LIMIT = 30;
 const { TextArea } = Input;
@@ -205,11 +206,12 @@ export default () => {
         soldDate: moment(element.item.soldDate).format("MM-DD-YYYY hh:mm A"),
         soldType: element.item.soldType,
         title: element.item._data.title,
-        idCard:
-          element.item.defined_list_items[0].defined_list &&
-          element.item.defined_list_items[0].defined_list.id,
-        card: element.item.defined_list_items[0].defined_list.keyword,
-        exclusion: element.item.defined_list_items[0].defined_list.exclusion,
+        idCard: _.get(element, "item.defined_list_items[0].defined_list.id"),
+        card: _.get(element, "item.defined_list_items[0].defined_list.keyword"),
+        exclusion: _.get(
+          element,
+          "item.defined_list_items[0].defined_list.exclusion"
+        ),
       };
     });
     if (serializeData.length === LIMIT) setIsHasMore(true);
