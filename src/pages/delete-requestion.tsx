@@ -67,7 +67,6 @@ export default () => {
   };
 
   const deleteUnRelatedItem = (record) => {
-
     gqlClient
       .mutate({
         fetchPolicy: "no-cache",

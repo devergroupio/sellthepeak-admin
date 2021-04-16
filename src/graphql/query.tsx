@@ -225,10 +225,14 @@ export const FETCH_NAME_CARD = gql`
 `;
 
 export const FETCH_PROXY_SETTING = gql`
-  query fetchProxySetting {
-    setting {
-      proxy
+  query getProxy {
+    proxy_manager(order_by: { required_captcha: desc_nulls_first }) {
+      cookies
       id
+      proxy
+      required_captcha
+      updated_at
+      userAgent
     }
   }
 `;
