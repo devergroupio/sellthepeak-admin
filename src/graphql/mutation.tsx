@@ -90,3 +90,14 @@ export const UPDATE_PROXY_SETTING = gql`
     }
   }
 `;
+
+export const UPSERT_PROXIES = gql`
+  mutation upsertProxy($proxies: [proxy_manager_insert_input!]!) {
+    insert_proxy_manager(
+      objects: $proxies
+      on_conflict: { constraint: proxy_manager_proxy_key, update_columns: [] }
+    ) {
+      affected_rows
+    }
+  }
+`;
