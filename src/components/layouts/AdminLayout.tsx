@@ -35,14 +35,14 @@ export default (props) => {
                 <span>Home</span>
               </a>
             </Menu.Item>
-            <Menu.Item key="/charts">
+            {/* <Menu.Item key="/charts">
               <Link href="/charts">
                 <a>
                   <AreaChartOutlined />
                   <span>Charts</span>
                 </a>
               </Link>
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item key="/short-code">
               <Link href="/short-code">
                 <a>
@@ -52,14 +52,14 @@ export default (props) => {
               </Link>
             </Menu.Item>
 
-            <Menu.Item key="/delete-requestion">
+            {/* <Menu.Item key="/delete-requestion">
               <Link href="/delete-requestion">
                 <a>
                   <DeleteOutlined />
                   <span>Delete Requestion</span>
                 </a>
               </Link>
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item key="/exclusion">
               <Link href="/exclusion">
                 <a>
