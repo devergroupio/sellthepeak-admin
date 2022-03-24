@@ -101,3 +101,11 @@ export const UPSERT_PROXIES = gql`
     }
   }
 `;
+
+export const DELETE_ALL_PROXIES = gql`
+  mutation removeALlProxies {
+    delete_proxy_manager(where: { id: { _is_null: false } }) {
+      affected_rows
+    }
+  }
+`;

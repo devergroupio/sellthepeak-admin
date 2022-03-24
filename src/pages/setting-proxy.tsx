@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import AdminLayout from "../components/layouts/AdminLayout";
-import { Table, Tag, Modal, Input, Button, Spin } from "antd";
+import { Table, Tag, Modal, Input, Button, Spin, notification } from "antd";
 import { useApolloClient } from "@apollo/react-hooks";
 import { FETCH_PROXY_SETTING } from "~@/graphql/query";
-import { UPSERT_PROXIES } from "~@/graphql/mutation";
+import { UPSERT_PROXIES, DELETE_ALL_PROXIES } from "~@/graphql/mutation";
 import AppContext from "~@/components/AppProvider";
 import Redirect from "~@/components/Redirect";
 import Moment from "react-moment";
@@ -55,6 +55,22 @@ export default () => {
     setProxies(proxies);
   };
 
+  const handleClearProxy = async () => {
+    setIsLoading(true);
+    hsrClient
+      .mutate({
+        fetchPolicy: "no-cache",
+        mutation: DELETE_ALL_PROXIES,
+      })
+      .then(() => {
+        notification.success({
+          message: "Success",
+          description: "Remove all proxies successfully",
+        });
+        setIsLoading(false);
+      });
+  };
+
   const Footer = () => {
     return (
       <p>
@@ -98,8 +114,22 @@ export default () => {
       <Button onClick={() => setIsOpen(true)} type="primary">
         Add Proxy
       </Button>
+      <Button
+        type="primary"
+        danger
+        style={{ marginLeft: 10 }}
+        onClick={handleClearProxy}
+      >
+        Clear Proxy
+      </Button>
       <Spin spinning={isLoading}>
-        <Modal closable={true} visible={isOpen} okText="Add" onOk={onSubmit}>
+        <Modal
+          closable={isOpen}
+          visible={isOpen}
+          okText="Add"
+          onOk={onSubmit}
+          onCancel={() => setIsOpen(false)}
+        >
           <TextArea
             rows={10}
             value={proxyList}
